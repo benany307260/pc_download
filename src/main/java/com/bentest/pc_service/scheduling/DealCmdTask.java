@@ -12,7 +12,7 @@ import com.bentest.pc_service.constant.CmdType;
 import com.bentest.pc_service.dao.CmdMapper;
 import com.bentest.pc_service.entity.AmzCmdtask;
 import com.bentest.pc_service.listpage.ProductListService;
-import com.bentest.pc_service.service.department.AmzDepService;
+import com.bentest.pc_service.service.download.DownloadService;
 import com.bentest.pc_service.service.product.AmzProductService;
 
 @Service
@@ -78,7 +78,7 @@ public class DealCmdTask {
 			// 
 			if(cmdTask.getCmdType() == CmdType.CMD102) {
 				String cmdText = cmdTask.getCmdText();
-				int res = amzDepService.dealRootDep(cmdText);
+				int res = 0;//amzDepService.dealRootDep(cmdText);
 				return res;
 			}
 			
