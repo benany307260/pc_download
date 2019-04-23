@@ -24,7 +24,7 @@ public class DealCmdTask {
 	private CmdMapper cmdMapper;
 	
 	@Autowired
-	private AmzDepService amzDepService;
+	private DownloadService amzDepService;
 	
 	@Autowired
 	private AmzProductService productService;
@@ -76,24 +76,9 @@ public class DealCmdTask {
 			}
 			
 			// 
-			if(cmdTask.getCmdType() == CmdType.CMD101) {
+			if(cmdTask.getCmdType() == CmdType.CMD102) {
 				String cmdText = cmdTask.getCmdText();
 				int res = amzDepService.dealRootDep(cmdText);
-				return res;
-			}
-			if(cmdTask.getCmdType() == CmdType.CMD103) {
-				String cmdText = cmdTask.getCmdText();
-				int res = amzDepService.dealSonDep(cmdText);
-				return res;
-			}
-			if(cmdTask.getCmdType() == CmdType.CMD105) {
-				String cmdText = cmdTask.getCmdText();
-				int res = productService.dealProduct(cmdText);
-				return res;
-			}
-			if(cmdTask.getCmdType() == CmdType.CMD107) {
-				String cmdText = cmdTask.getCmdText();
-				int res = productListService.dealProductList(cmdText);
 				return res;
 			}
 			

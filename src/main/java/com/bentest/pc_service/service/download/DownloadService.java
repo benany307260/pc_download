@@ -1,4 +1,4 @@
-package com.bentest.pc_service.service.department;
+package com.bentest.pc_service.service.download;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import com.bentest.pc_service.util.URLUtil;
 import cn.hutool.core.util.StrUtil;
 
 @Service
-public class AmzDepService {
+public class DownloadService {
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	

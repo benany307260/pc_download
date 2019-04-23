@@ -20,7 +20,7 @@ public interface CmdMapper {
 	/**
 	 * 查询指令表
 	 */
-	@Select("SELECT * FROM amz_cmdtask WHERE ID>#{id} AND CMD_STATUS=0 AND CMD_TYPE IN(101,103,105,107) ORDER BY ID ASC ")
+	@Select("SELECT * FROM amz_cmdtask WHERE ID>#{id} AND CMD_STATUS=0 AND CMD_TYPE IN(102) ORDER BY ID ASC ")
 	@Results({ 
 		@Result(property = "cmdStatus", column = "CMD_STATUS"),
 		@Result(property = "cmdText", column = "CMD_TEXT"),
