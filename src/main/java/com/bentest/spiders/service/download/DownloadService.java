@@ -51,7 +51,11 @@ public class DownloadService {
 			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Arts & Crafts-123456789.html";
 			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Painting, Drawing & Art Supplies-123456789.html";
 			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Art Paper-123456789.html";
-			String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Artist Trading Cards-123456789.html";
+			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Artist Trading Cards-123456789.html";
+			
+			
+			String htmlFilePath = "F:\\study\\amz\\git\\pc_service\\page\\list-page\\Arts & Crafts-123456789.html";
+			
 			parentDep.setHtmlFilePath(htmlFilePath);
 			
 			// 通知处理子类目html
