@@ -27,6 +27,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.ben</groupId>
+			<artifactId>pc_common</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ben</groupId>
 			<artifactId>pc_entity</artifactId>
 			<version>1.0</version>
 		</dependency>
