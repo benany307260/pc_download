@@ -51,11 +51,11 @@ public class AmzDepartment implements Serializable {
 	@Column(name="PARENT_ID")
 	private Long parentId;
 
-	@Column(name="SHOW_NAME_CN")
-	private String showNameCn;
+	@Column(name="DEP_NAME_CN")
+	private String depNameCn;
 
-	@Column(name="SHOW_NAME_EN")
-	private String showNameEn;
+	@Column(name="DEP_NAME")
+	private String depName;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="UPDATE_TIME")
@@ -66,7 +66,19 @@ public class AmzDepartment implements Serializable {
 	@Column(name="URL_DOMAIN")
 	private String urlDomain;
 	
+	@Column(name="SOFT_NUM")
+	private Integer softNum;
+	
+	@Column(name="DEP_ID_ALL")
+	private String depIdAll;
+	
 	public AmzDepartment() {
+	}
+	
+	public AmzDepartment(String depName, String url, Integer softNum) {
+		this.depName = depName;
+		this.url = url;
+		this.softNum = softNum;
 	}
 	
 	public String toString() {
@@ -76,16 +88,33 @@ public class AmzDepartment implements Serializable {
 				+ "depLevel=" + depLevel + ","
 				+ "parentDepId=" + parentDepId + ","
 				+ "parentId=" + parentId + ","
-				+ "showNameEn=" + showNameEn + ","
-				+ "showNameCn=" + showNameCn + ","
+				+ "depName=" + depName + ","
+				+ "depNameCn=" + depNameCn + ","
 				+ "urlDomain=" + urlDomain + ","
 				+ "url=" + url + ","
 				+ "htmlFilePath=" + htmlFilePath + ","
 				+ "fromHtmlFilePath=" + fromHtmlFilePath + ","
 				+ "depStatus=" + depStatus + ","
+				+ "softNum=" + softNum + ","
 				+ "createTime=" + createTime + ","
 				+ "updateTime=" + updateTime + ","
 				;
+	}
+
+	public String getDepIdAll() {
+		return depIdAll;
+	}
+
+	public void setDepIdAll(String depIdAll) {
+		this.depIdAll = depIdAll;
+	}
+
+	public Integer getSoftNum() {
+		return softNum;
+	}
+
+	public void setSoftNum(Integer softNum) {
+		this.softNum = softNum;
 	}
 
 	public String getFromHtmlFilePath() {
@@ -160,20 +189,20 @@ public class AmzDepartment implements Serializable {
 		this.parentId = parentId;
 	}
 
-	public String getShowNameCn() {
-		return showNameCn;
+	public String getDepNameCn() {
+		return depNameCn;
 	}
 
-	public void setShowNameCn(String showNameCn) {
-		this.showNameCn = showNameCn;
+	public void setDepNameCn(String depNameCn) {
+		this.depNameCn = depNameCn;
 	}
 
-	public String getShowNameEn() {
-		return showNameEn;
+	public String getDepName() {
+		return depName;
 	}
 
-	public void setShowNameEn(String showNameEn) {
-		this.showNameEn = showNameEn;
+	public void setDepName(String depName) {
+		this.depName = depName;
 	}
 
 	public Date getUpdateTime() {
