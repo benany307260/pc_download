@@ -76,7 +76,7 @@ public class DealCmdTask {
 			// 下载产品详情html
 			if(cmdTask.getCmdType() == CmdType.CMD104) {
 				String cmdText = cmdTask.getCmdText();
-				int res = -1;//downloadService.dealSonDepDownload(cmdText);
+				int res = downloadService.dealProductDownload(cmdText);
 				return res;
 			}
 			// 下载产品列表页html

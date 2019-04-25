@@ -16,6 +16,7 @@ import com.bentest.spiders.constant.AMZConstant;
 import com.bentest.spiders.constant.CmdType;
 import com.bentest.spiders.entity.AmzCmdtask;
 import com.bentest.spiders.entity.AmzDepartment;
+import com.bentest.spiders.entity.AmzProduct;
 import com.bentest.spiders.repository.AmzCmdtaskRespository;
 
 import cn.hutool.core.util.StrUtil;
@@ -91,6 +92,58 @@ public class DownloadService {
 			return 1;
 		} catch (Exception e) {
 			log.error("处理子类目下载，异常。cmdText="+cmdText, e);
+			return -9999;
+		}
+	}
+	
+	/**
+	 * 产品详情页下载
+	 * @param cmdText
+	 * @return
+	 */
+	public int dealProductDownload(String cmdText) {
+		
+		try {
+			if(StrUtil.isBlank(cmdText)) {
+				log.error("处理产品详情页下载，指令内容为空。");
+				return -1;
+			}
+			
+			AmzProduct product = JSON.parseObject(cmdText, AmzProduct.class);
+			if(product == null) {
+				log.error("处理产品详情页下载，产品对象为null。cmdText="+cmdText);
+				return -2;
+			}
+			if(StrUtil.isBlank(product.getProdUrl())) {
+				log.error("处理产品详情页下载，url为null。cmdText="+cmdText);
+				return -3;
+			}
+			
+			// TODO 执行下载
+			
+			// TODO 下载成功，返回html文件路径
+			String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\product-page\\product9.html";
+			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Painting, Drawing & Art Supplies-123456789.html";
+			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Art Paper-123456789.html";
+			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Artist Trading Cards-123456789.html";
+			
+			
+			//String htmlFilePath = "F:\\study\\amz\\git\\pc_service\\page\\list-page\\Arts & Crafts-123456789.html";
+			
+			product.setHtmlFilePath(htmlFilePath);
+			
+			List<AmzCmdtask> cmdList = new ArrayList<>();
+			
+			// 通知处理产品详情html
+			String cmdTextJson = JSON.toJSONString(product);
+			AmzCmdtask cmd105 = new AmzCmdtask(CmdType.CMD105, cmdTextJson);
+			cmdList.add(cmd105);
+			
+			cmdtaskRespository.saveAll(cmdList);
+			
+			return 1;
+		} catch (Exception e) {
+			log.error("处理产品详情页下载，异常。cmdText="+cmdText, e);
 			return -9999;
 		}
 	}
