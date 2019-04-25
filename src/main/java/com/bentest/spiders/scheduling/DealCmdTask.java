@@ -73,6 +73,18 @@ public class DealCmdTask {
 				int res = downloadService.dealSonDepDownload(cmdText);
 				return res;
 			}
+			// 下载产品详情html
+			if(cmdTask.getCmdType() == CmdType.CMD104) {
+				String cmdText = cmdTask.getCmdText();
+				int res = -1;//downloadService.dealSonDepDownload(cmdText);
+				return res;
+			}
+			// 下载产品列表页html
+			if(cmdTask.getCmdType() == CmdType.CMD106) {
+				String cmdText = cmdTask.getCmdText();
+				int res = downloadService.dealProductListDownload(cmdText);
+				return res;
+			}
 			
 			return -1;
 			
