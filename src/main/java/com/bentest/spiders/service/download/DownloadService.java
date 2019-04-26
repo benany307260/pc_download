@@ -120,8 +120,8 @@ public class DownloadService {
 			// TODO 执行下载
 			
 			// TODO 下载成功，返回html文件路径
-			String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Automotive\\Automotive-1-B00VH84L5E.html";
-			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Painting, Drawing & Art Supplies-123456789.html";
+			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Automotive\\Tools & Equipment-2-B003WXGLS2.html";
+			String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Automotive\\Tools & Equipment-2-B07C2XLR3J.html";
 			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Art Paper-123456789.html";
 			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Artist Trading Cards-123456789.html";
 			
@@ -180,8 +180,8 @@ public class DownloadService {
 			// TODO 执行下载
 			
 			// TODO 下载成功，返回html文件路径
-			String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Automotive\\Automotive-2-123456789.html";
-			
+			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Automotive\\Automotive-2-123456789.html";
+			String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Automotive\\Tools & Equipment-2-123456789.html";
 			
 			List<AmzCmdtask> cmdList = new ArrayList<>();
 			
