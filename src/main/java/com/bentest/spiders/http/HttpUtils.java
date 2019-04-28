@@ -13,76 +13,85 @@ import java.net.URLEncoder;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
- 
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
- 
+
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.utils.URIBuilder;
+import org.jsoup.helper.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
+
+import cn.hutool.core.util.StrUtil;
  
 public class HttpUtils {
+	
+	private static Logger log = LoggerFactory.getLogger(HttpUtils.class);
  
-	public static String sendGet(boolean isHttps, String requestUrl, 
-			Map<String, String> params, Map<String, String> headers, String charSet) {
-		if (StringUtils.isBlank(requestUrl)) {
+	public static String sendGet(HttpRequest request) {
+		
+		if(request == null) {
 			return "";
 		}
-		if (StringUtils.isBlank(charSet)) {
-			charSet = "UTF-8";
+		if (StringUtils.isBlank(request.getUrl())) {
+			return "";
 		}
-		URL url = null;
+		
 		URLConnection conn = null;
 		BufferedReader br = null;
  
 		try {
+			String urlAndParam = getRequestUrlWithParam(request.getUrl(), request.getParams());
 			// 创建连接
-			url = new URL(requestUrl + "?" + requestParamsBuild(params));
-			if (isHttps) {
-				conn = getHttpsUrlConnection(url);
+			URL url = new URL(urlAndParam);
+			
+			if (request.isUseHttps()) {
+				conn = getHttpsUrlConnection(url, request);
 			} else {
-				conn = (HttpURLConnection) url.openConnection();
+				conn = getHttpUrlConnection(url, request);
 			}
  
 			// 设置请求头通用属性
  
 			// 指定客户端能够接收的内容类型
-			conn.setRequestProperty("Accept", "*/*");
+			//conn.setRequestProperty("Accept", "*/*");
  
 			// 设置连接的状态为长连接
-			conn.setRequestProperty("Connection", "keep-alive");
+			//conn.setRequestProperty("Connection", "keep-alive");
  
 			// 设置发送请求的客户机系统信息
-			conn.setRequestProperty("User-Agent",
-					"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0");
+			//conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0");
  
 			// 设置请求头自定义属性
-			if (null != headers && headers.size() > 0) {
- 
-				for (Map.Entry<String, String> entry : headers.entrySet()) {
+			if (!CollectionUtils.isEmpty(request.getHeaders())) {
+				for (Map.Entry<String, String> entry : request.getHeaders().entrySet()) {
 					conn.setRequestProperty(entry.getKey(), entry.getValue());
 				}
 			}
  
 			// 设置其他属性
-			// conn.setUseCaches(false);//不使用缓存
-			// conn.setReadTimeout(10000);// 设置读取超时时间
-			// conn.setConnectTimeout(10000);// 设置连接超时时间
+			conn.setUseCaches(request.isUseCaches());//不使用缓存
+			conn.setReadTimeout(request.getReadTimeout());// 设置读取超时时间
+			conn.setConnectTimeout(request.getConnTimeout());// 设置连接超时时间
  
 			// 建立实际连接
 			conn.connect();
  
 			// 读取请求结果
-			br = new BufferedReader(new InputStreamReader(conn.getInputStream(), charSet));
+			br = new BufferedReader(new InputStreamReader(conn.getInputStream(), request.getCharSet()));
 			String line = null;
 			StringBuilder sb = new StringBuilder();
 			while ((line = br.readLine()) != null) {
 				sb.append(line);
 			}
 			return sb.toString();
-		} catch (Exception exception) {
+		} catch (Exception e) {
+			log.error("发送get请求，异常。", e);
 			return "";
 		} finally {
 			try {
@@ -90,15 +99,29 @@ public class HttpUtils {
 					br.close();
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("发送get请求，关闭资源，异常。", e);
 			}
 		}
  
 	}
 	
 	private static String getRequestUrlWithParam(String requestUrl, Map<String, String> paramsMap) {
+		if(StrUtil.isBlank(requestUrl)) {
+			return "";
+		}
 		if(CollectionUtils.isEmpty(paramsMap)) {
 			return requestUrl;
+		}
+		
+		try {
+			URIBuilder uri = new URIBuilder(requestUrl);
+			for(String key : paramsMap.keySet()) {
+				uri.setParameter(key, paramsMap.get(key));
+			}
+			return uri.build().toString();
+		} catch (Exception e) {
+			log.error("获取请求url并拼接参数，异常。requestUrl="+requestUrl+",params="+paramsMap.toString(), e);
+			return "";
 		}
 	}
  
@@ -120,13 +143,26 @@ public class HttpUtils {
 		return result;
 	}
  
-	private static HttpsURLConnection getHttpsUrlConnection(URL url) throws Exception {
-		
-		// 创建代理服务器  
-        InetSocketAddress addr = new InetSocketAddress("119.178.169.25", 8878);  
-        Proxy proxy = new Proxy(Proxy.Type.HTTP, addr); //http 代理
-		
-		HttpsURLConnection httpsConn = (HttpsURLConnection) url.openConnection(proxy);
+	private static HttpsURLConnection getHttpsUrlConnection(URL url, HttpRequest request) throws Exception {
+
+		HttpsURLConnection httpsConn = null;
+		if(request.isUseProxy()) {
+			if(StringUtil.isBlank(request.getProxyIp())) {
+				log.error("获取https连接，代理ip为空。");
+				return null;
+			}
+			if(request.getProxyPort() < 1) {
+				log.error("获取https连接，代理port为空。");
+				return null;
+			}
+			// 创建代理服务器  
+			InetSocketAddress addr = new InetSocketAddress(request.getProxyIp(), request.getProxyPort());  
+			Proxy proxy = new Proxy(Proxy.Type.HTTP, addr); //http 代理
+			httpsConn = (HttpsURLConnection) url.openConnection(proxy);
+		}else {
+			httpsConn = (HttpsURLConnection) url.openConnection();
+		}
+
 		// 创建SSLContext对象，并使用我们指定的信任管理器初始化
 		TrustManager[] tm = { new X509TrustManager() {
 			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
@@ -149,6 +185,29 @@ public class HttpUtils {
 		httpsConn.setSSLSocketFactory(ssf);
 		return httpsConn;
  
+	}
+	
+	private static HttpURLConnection getHttpUrlConnection(URL url, HttpRequest request) throws Exception {
+
+		HttpURLConnection httpsConn = null;
+		if(request.isUseProxy()) {
+			if(StringUtil.isBlank(request.getProxyIp())) {
+				log.error("获取http连接，代理ip为空。");
+				return null;
+			}
+			if(request.getProxyPort() < 1) {
+				log.error("获取http连接，代理port为空。");
+				return null;
+			}
+			// 创建代理服务器  
+			InetSocketAddress addr = new InetSocketAddress(request.getProxyIp(), request.getProxyPort());  
+			Proxy proxy = new Proxy(Proxy.Type.HTTP, addr); //http 代理
+			httpsConn = (HttpURLConnection) url.openConnection(proxy);
+		}else {
+			httpsConn = (HttpURLConnection) url.openConnection();
+		}
+		
+		return httpsConn;
 	}
  
 	public static byte[] getFileAsByte(boolean isHttps, String requestUrl) {
