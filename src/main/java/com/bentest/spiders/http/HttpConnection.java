@@ -1,5 +1,7 @@
 package com.bentest.spiders.http;
 
+import com.bentest.spiders.proxy.ProxyInfo;
+
 public class HttpConnection {
 	
 	private int id;
@@ -8,15 +10,29 @@ public class HttpConnection {
 	
 	private String cookie;
 	
-	private String proxyIp;
+	//private String proxyIp;
 	
-	private int proxyPort;
+	//private int proxyPort;
 	
-	private HttpUtils httpUtils;
+	private ProxyInfo proxy;
+	
+	private HttpUtils httpUtils = new HttpUtils();
 
 	
 	public HttpConnection() {
+	}
+	
+	public HttpConnection(int id, String userAgent, ProxyInfo proxy) {
+		this.id = id;
+		this.userAgent = userAgent;
+		this.proxy = proxy;
 		
+		HttpRequest httpRequest = new HttpRequest();
+		httpRequest.setUseProxy(true);
+		httpRequest.setProxyIp(proxy.getIp());
+		httpRequest.setProxyPort(proxy.getPort());
+		httpRequest.getHeaders().put(HeaderConstant.NAME_USER_AGENT, userAgent);
+		httpUtils.setHttpRequest(httpRequest);
 	}
 	
 	public String toString() {
@@ -24,14 +40,18 @@ public class HttpConnection {
 			+ "id=" + id
 			+ "userAgent=" + userAgent
 			+ "cookie=" + cookie
-			+ "proxyIp=" + proxyIp
-			+ "proxyPort=" + proxyPort
+			//+ "proxyIp=" + proxyIp
+			//+ "proxyPort=" + proxyPort
 			;
 		return str;
 	}
 	
-	public HttpConnection(int id) {
-		this.id = id;
+	public ProxyInfo getProxy() {
+		return proxy;
+	}
+
+	public void setProxy(ProxyInfo proxy) {
+		this.proxy = proxy;
 	}
 	
 	public int getId() {
@@ -56,22 +76,6 @@ public class HttpConnection {
 
 	public void setCookie(String cookie) {
 		this.cookie = cookie;
-	}
-
-	public String getProxyIp() {
-		return proxyIp;
-	}
-
-	public void setProxyIp(String proxyIp) {
-		this.proxyIp = proxyIp;
-	}
-
-	public int getProxyPort() {
-		return proxyPort;
-	}
-
-	public void setProxyPort(int proxyPort) {
-		this.proxyPort = proxyPort;
 	}
 
 	public HttpUtils getHttpUtils() {

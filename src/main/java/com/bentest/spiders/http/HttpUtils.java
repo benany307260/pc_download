@@ -29,6 +29,13 @@ public class HttpUtils {
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
+	private HttpRequest httpRequest = new HttpRequest();
+	
+	public HttpResponse sendGetInHttps(String url) {
+		httpRequest.setUrl(url);
+		return sendGetInHttps(httpRequest);
+	}
+	
 	public HttpResponse sendGetInHttps(HttpRequest request) {
 		
 		if(request == null) {
@@ -284,6 +291,7 @@ public class HttpUtils {
 		return httpsConn;
 	}
  
+	
 /*	
  public byte[] getFileAsByte(HttpRequest request) {
 		if (StringUtils.isBlank(request.getUrl())) {
@@ -344,12 +352,19 @@ public class HttpUtils {
  
 	}*/
  
+	public HttpRequest getHttpRequest() {
+		return httpRequest;
+	}
+
+	public void setHttpRequest(HttpRequest httpRequest) {
+		this.httpRequest = httpRequest;
+	}
+
 	public static void main(String[] args) {
 		//String requestUrl = "https://httpbin.org/get";
 		
 		HttpRequest request = new HttpRequest();
 		request.setUrl("https://www.baidu.com/");
-		request.setUseHttps(true);
 		request.setUseProxy(false);
 		
 		HttpUtils httpUtils = new HttpUtils();

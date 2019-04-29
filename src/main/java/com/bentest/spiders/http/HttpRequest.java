@@ -1,22 +1,23 @@
 package com.bentest.spiders.http;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import cn.hutool.http.Header;
 
 public class HttpRequest {
 	
 	private String url;
 	
-	private Map<String, String> params;
+	private Map<String, String> params = new HashMap<>();
 	
-	private Map<String, String> headers;
+	private Map<String, String> headers = new HashMap<>();
 
 	private String charSet = "UTF-8";
 	
 	private int readTimeout = 20000;
 	
 	private int connTimeout = 20000;
-	
-	private boolean useHttps = false;
 	
 	private boolean useProxy = false;
 
@@ -32,6 +33,11 @@ public class HttpRequest {
 	
 	public HttpRequest(String url) {
 		this.url = url;
+	}
+	
+	private Map<String,String> initHeader() {
+		Map<String, String> headers = new HashMap<>();
+		headers.put(HeaderConstant.NAME_ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
 	}
 
 	public boolean isUseCaches() {
@@ -88,14 +94,6 @@ public class HttpRequest {
 
 	public void setConnTimeout(int connTimeout) {
 		this.connTimeout = connTimeout;
-	}
-
-	public boolean isUseHttps() {
-		return useHttps;
-	}
-
-	public void setUseHttps(boolean useHttps) {
-		this.useHttps = useHttps;
 	}
 
 	public boolean isUseProxy() {
