@@ -3,15 +3,14 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -32,17 +31,18 @@ import cn.hutool.core.util.StrUtil;
 public class HttpUtils {
 	
 	private static Logger log = LoggerFactory.getLogger(HttpUtils.class);
- 
-	public static String sendGet(HttpRequest request) {
+	
+	private static HttpResponse sendGetInHttps(HttpRequest request) {
 		
 		if(request == null) {
-			return "";
+			log.error("https发送get请求，request为null。");
+			return null;
 		}
 		if (StringUtils.isBlank(request.getUrl())) {
-			return "";
+			log.error("https发送get请求，url为空。");
+			return null;
 		}
 		
-		URLConnection conn = null;
 		BufferedReader br = null;
  
 		try {
@@ -50,11 +50,7 @@ public class HttpUtils {
 			// 创建连接
 			URL url = new URL(urlAndParam);
 			
-			if (request.isUseHttps()) {
-				conn = getHttpsUrlConnection(url, request);
-			} else {
-				conn = getHttpUrlConnection(url, request);
-			}
+			HttpsURLConnection conn = getHttpsUrlConnection(url, request);
  
 			// 设置请求头通用属性
  
@@ -81,7 +77,89 @@ public class HttpUtils {
  
 			// 建立实际连接
 			conn.connect();
+			
+			HttpResponse response = new HttpResponse();
+			
+			Map<String, List<String>> responseHeaders = conn.getHeaderFields();
+			response.setHeaders(responseHeaders);
+			/*for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+				List<String> value = entry.getValue();
+				System.out.println("Key : " + entry.getKey() + 
+		                 " ,Value : " + entry.getValue());
+			}*/
+			
+			int responseCode = conn.getResponseCode();
+			response.setCode(responseCode);
+			
+			// 读取请求结果
+			br = new BufferedReader(new InputStreamReader(conn.getInputStream(), request.getCharSet()));
+			String line = null;
+			StringBuilder sb = new StringBuilder();
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+			
+			response.setContent(sb.toString());
+			
+			return response;
+		} catch (Exception e) {
+			log.error("https发送get请求，异常。", e);
+			return null;
+		} finally {
+			try {
+				if (br != null) {
+					br.close();
+				}
+			} catch (Exception e) {
+				log.error("https发送get请求，关闭资源，异常。", e);
+			}
+		}
+	}
  
+	public static String sendGetInHttp(HttpRequest request) {
+		
+		if(request == null) {
+			return "";
+		}
+		if (StringUtils.isBlank(request.getUrl())) {
+			return "";
+		}
+		
+		BufferedReader br = null;
+ 
+		try {
+			String urlAndParam = getRequestUrlWithParam(request.getUrl(), request.getParams());
+			// 创建连接
+			URL url = new URL(urlAndParam);
+			
+			HttpURLConnection conn = getHttpUrlConnection(url, request);
+ 
+			// 设置请求头通用属性
+ 
+			// 指定客户端能够接收的内容类型
+			//conn.setRequestProperty("Accept", "*/*");
+ 
+			// 设置连接的状态为长连接
+			//conn.setRequestProperty("Connection", "keep-alive");
+ 
+			// 设置发送请求的客户机系统信息
+			//conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0");
+ 
+			// 设置请求头自定义属性
+			if (!CollectionUtils.isEmpty(request.getHeaders())) {
+				for (Map.Entry<String, String> entry : request.getHeaders().entrySet()) {
+					conn.setRequestProperty(entry.getKey(), entry.getValue());
+				}
+			}
+ 
+			// 设置其他属性
+			conn.setUseCaches(request.isUseCaches());//不使用缓存
+			conn.setReadTimeout(request.getReadTimeout());// 设置读取超时时间
+			conn.setConnectTimeout(request.getConnTimeout());// 设置连接超时时间
+ 
+			// 建立实际连接
+			conn.connect();
+			
 			// 读取请求结果
 			br = new BufferedReader(new InputStreamReader(conn.getInputStream(), request.getCharSet()));
 			String line = null;
@@ -102,7 +180,6 @@ public class HttpUtils {
 				log.error("发送get请求，关闭资源，异常。", e);
 			}
 		}
- 
 	}
 	
 	private static String getRequestUrlWithParam(String requestUrl, Map<String, String> paramsMap) {
@@ -125,35 +202,17 @@ public class HttpUtils {
 		}
 	}
  
-	public static String requestParamsBuild(Map<String, String> map) {
-		String result = "";
-		if (null != map && map.size() > 0) {
-			StringBuffer sb = new StringBuffer();
-			for (Map.Entry<String, String> entry : map.entrySet()) {
-				try {
-					String value = URLEncoder.encode(entry.getValue(), "UTF-8");
-					sb.append(entry.getKey() + "=" + value + "&");
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-			}
- 
-			result = sb.substring(0, sb.length() - 1);
-		}
-		return result;
-	}
- 
 	private static HttpsURLConnection getHttpsUrlConnection(URL url, HttpRequest request) throws Exception {
 
 		HttpsURLConnection httpsConn = null;
 		if(request.isUseProxy()) {
 			if(StringUtil.isBlank(request.getProxyIp())) {
-				log.error("获取https连接，代理ip为空。");
-				return null;
+				log.error("获取http连接，代理ip为空。");
+				throw new Exception("获取http连接，代理ip为空。");
 			}
 			if(request.getProxyPort() < 1) {
-				log.error("获取https连接，代理port为空。");
-				return null;
+				log.error("获取http连接，代理port为空。");
+				throw new Exception("获取http连接，代理port为空。");
 			}
 			// 创建代理服务器  
 			InetSocketAddress addr = new InetSocketAddress(request.getProxyIp(), request.getProxyPort());  
@@ -184,7 +243,6 @@ public class HttpUtils {
 		SSLSocketFactory ssf = sslContext.getSocketFactory();
 		httpsConn.setSSLSocketFactory(ssf);
 		return httpsConn;
- 
 	}
 	
 	private static HttpURLConnection getHttpUrlConnection(URL url, HttpRequest request) throws Exception {
@@ -193,11 +251,11 @@ public class HttpUtils {
 		if(request.isUseProxy()) {
 			if(StringUtil.isBlank(request.getProxyIp())) {
 				log.error("获取http连接，代理ip为空。");
-				return null;
+				throw new Exception("获取http连接，代理ip为空。");
 			}
 			if(request.getProxyPort() < 1) {
 				log.error("获取http连接，代理port为空。");
-				return null;
+				throw new Exception("获取http连接，代理port为空。");
 			}
 			// 创建代理服务器  
 			InetSocketAddress addr = new InetSocketAddress(request.getProxyIp(), request.getProxyPort());  
@@ -210,8 +268,8 @@ public class HttpUtils {
 		return httpsConn;
 	}
  
-	public static byte[] getFileAsByte(boolean isHttps, String requestUrl) {
-		if (StringUtils.isBlank(requestUrl)) {
+	public static byte[] getFileAsByte(HttpRequest request) {
+		if (StringUtils.isBlank(request.getUrl())) {
 			return new byte[0];
 		}
 		URL url = null;
@@ -220,11 +278,11 @@ public class HttpUtils {
  
 		try {
 			// 创建连接
-			url = new URL(requestUrl);
-			if (isHttps) {
-				conn = getHttpsUrlConnection(url);
+			url = new URL(request.getUrl());
+			if (request.isUseHttps()) {
+				conn = getHttpsUrlConnection(url, request);
 			} else {
-				conn = (HttpURLConnection) url.openConnection();
+				conn = getHttpUrlConnection(url, request);
 			}
  
 			// 设置请求头通用属性
@@ -272,9 +330,15 @@ public class HttpUtils {
 	}
  
 	public static void main(String[] args) {
-		String requestUrl = "https://httpbin.org/get";
-		String a = HttpUtils.sendGet(true, requestUrl, null, null, "utf-8");
-		System.out.println(a);
+		//String requestUrl = "https://httpbin.org/get";
+		
+		HttpRequest request = new HttpRequest();
+		request.setUrl("https://www.baidu.com/");
+		request.setUseHttps(true);
+		request.setUseProxy(false);
+		
+		HttpResponse resp = HttpUtils.sendGetInHttps(request);
+		System.out.println(resp.getContent());
 	}
 	
 }
