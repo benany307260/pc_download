@@ -18,9 +18,11 @@ public class HttpConnectionFactory extends BasePooledObjectFactory<HttpConnectio
     public HttpConnection create() throws Exception {
     	
     	int id = idCount.getAndAdd(1);
+    	String ua = UAUtils.getRandomUA();
     	HttpConnection conn = new HttpConnection(id);
+    	conn.setUserAgent(ua);
     	
-    	log.info("http连接池，创建连接。id="+id);
+    	log.info("http连接池，创建连接。"+conn.toString());
     	
         return conn;
     }

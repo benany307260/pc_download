@@ -19,6 +19,17 @@ public class HttpConnection {
 		
 	}
 	
+	public String toString() {
+		String str = ""
+			+ "id=" + id
+			+ "userAgent=" + userAgent
+			+ "cookie=" + cookie
+			+ "proxyIp=" + proxyIp
+			+ "proxyPort=" + proxyPort
+			;
+		return str;
+	}
+	
 	public HttpConnection(int id) {
 		this.id = id;
 	}
