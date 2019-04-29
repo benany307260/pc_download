@@ -116,13 +116,15 @@ public class HttpUtils {
 		}
 	}
  
-	public static String sendGetInHttp(HttpRequest request) {
+	public static HttpResponse sendGetInHttp(HttpRequest request) {
 		
 		if(request == null) {
-			return "";
+			log.error("发送get请求，request为null。");
+			return null;
 		}
 		if (StringUtils.isBlank(request.getUrl())) {
-			return "";
+			log.error("发送get请求，url为空。");
+			return null;
 		}
 		
 		BufferedReader br = null;
@@ -160,6 +162,11 @@ public class HttpUtils {
 			// 建立实际连接
 			conn.connect();
 			
+			HttpResponse response = new HttpResponse();
+			
+			Map<String, List<String>> responseHeaders = conn.getHeaderFields();
+			response.setHeaders(responseHeaders);
+			
 			// 读取请求结果
 			br = new BufferedReader(new InputStreamReader(conn.getInputStream(), request.getCharSet()));
 			String line = null;
@@ -167,10 +174,13 @@ public class HttpUtils {
 			while ((line = br.readLine()) != null) {
 				sb.append(line);
 			}
-			return sb.toString();
+			
+			response.setContent(sb.toString());
+			
+			return response;
 		} catch (Exception e) {
 			log.error("发送get请求，异常。", e);
-			return "";
+			return null;
 		} finally {
 			try {
 				if (br != null) {
