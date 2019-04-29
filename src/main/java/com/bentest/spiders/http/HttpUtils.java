@@ -1,13 +1,10 @@
 package com.bentest.spiders.http;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -30,9 +27,9 @@ import cn.hutool.core.util.StrUtil;
  
 public class HttpUtils {
 	
-	private static Logger log = LoggerFactory.getLogger(HttpUtils.class);
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	private static HttpResponse sendGetInHttps(HttpRequest request) {
+	private HttpResponse sendGetInHttps(HttpRequest request) {
 		
 		if(request == null) {
 			log.error("https发送get请求，request为null。");
@@ -116,7 +113,7 @@ public class HttpUtils {
 		}
 	}
  
-	public static HttpResponse sendGetInHttp(HttpRequest request) {
+	public HttpResponse sendGetInHttp(HttpRequest request) {
 		
 		if(request == null) {
 			log.error("发送get请求，request为null。");
@@ -192,7 +189,7 @@ public class HttpUtils {
 		}
 	}
 	
-	private static String getRequestUrlWithParam(String requestUrl, Map<String, String> paramsMap) {
+	private String getRequestUrlWithParam(String requestUrl, Map<String, String> paramsMap) {
 		if(StrUtil.isBlank(requestUrl)) {
 			return "";
 		}
@@ -212,7 +209,7 @@ public class HttpUtils {
 		}
 	}
  
-	private static HttpsURLConnection getHttpsUrlConnection(URL url, HttpRequest request) throws Exception {
+	private HttpsURLConnection getHttpsUrlConnection(URL url, HttpRequest request) throws Exception {
 
 		HttpsURLConnection httpsConn = null;
 		if(request.isUseProxy()) {
@@ -255,7 +252,7 @@ public class HttpUtils {
 		return httpsConn;
 	}
 	
-	private static HttpURLConnection getHttpUrlConnection(URL url, HttpRequest request) throws Exception {
+	private HttpURLConnection getHttpUrlConnection(URL url, HttpRequest request) throws Exception {
 
 		HttpURLConnection httpsConn = null;
 		if(request.isUseProxy()) {
@@ -278,7 +275,8 @@ public class HttpUtils {
 		return httpsConn;
 	}
  
-	public static byte[] getFileAsByte(HttpRequest request) {
+/*	
+ public byte[] getFileAsByte(HttpRequest request) {
 		if (StringUtils.isBlank(request.getUrl())) {
 			return new byte[0];
 		}
@@ -297,8 +295,6 @@ public class HttpUtils {
  
 			// 设置请求头通用属性
  
-			// 指定客户端能够接收的内容类型
-			conn.setRequestProperty("accept", "*/*");
  
 			// 设置连接的状态为长连接
 			conn.setRequestProperty("Connection", "keep-alive");
@@ -337,7 +333,7 @@ public class HttpUtils {
 			}
 		}
  
-	}
+	}*/
  
 	public static void main(String[] args) {
 		//String requestUrl = "https://httpbin.org/get";
@@ -347,7 +343,9 @@ public class HttpUtils {
 		request.setUseHttps(true);
 		request.setUseProxy(false);
 		
-		HttpResponse resp = HttpUtils.sendGetInHttps(request);
+		HttpUtils httpUtils = new HttpUtils();
+		
+		HttpResponse resp = httpUtils.sendGetInHttps(request);
 		System.out.println(resp.getContent());
 	}
 	
