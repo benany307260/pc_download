@@ -29,7 +29,7 @@ public class HttpUtils {
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	private HttpResponse sendGetInHttps(HttpRequest request) {
+	public HttpResponse sendGetInHttps(HttpRequest request) {
 		
 		if(request == null) {
 			log.error("https发送get请求，request为null。");
@@ -111,6 +111,15 @@ public class HttpUtils {
 				log.error("https发送get请求，关闭资源，异常。", e);
 			}
 		}
+	}
+	
+	public String sendGet(String url) {
+		HttpRequest request = new HttpRequest(url);
+		HttpResponse response = sendGetInHttp(request);
+		if(response == null) {
+			return null;
+		}
+		return response.getContent();
 	}
  
 	public HttpResponse sendGetInHttp(HttpRequest request) {

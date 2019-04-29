@@ -25,6 +25,14 @@ public class HttpRequest {
 	private int proxyPort;
 	
 	private boolean useCaches = false;
+	
+	public HttpRequest() {
+		
+	}
+	
+	public HttpRequest(String url) {
+		this.url = url;
+	}
 
 	public boolean isUseCaches() {
 		return useCaches;
