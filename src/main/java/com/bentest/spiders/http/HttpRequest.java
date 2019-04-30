@@ -3,15 +3,13 @@ package com.bentest.spiders.http;
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.hutool.http.Header;
-
 public class HttpRequest {
 	
 	private String url;
 	
 	private Map<String, String> params = new HashMap<>();
 	
-	private Map<String, String> headers = new HashMap<>();
+	private Map<String, String> headers = initHeader();
 
 	private String charSet = "UTF-8";
 	
@@ -37,7 +35,15 @@ public class HttpRequest {
 	
 	private Map<String,String> initHeader() {
 		Map<String, String> headers = new HashMap<>();
+		headers.put(HeaderConstant.NAME_METHOD, "GET");
+		headers.put(HeaderConstant.NAME_SCHEME, "https");
 		headers.put(HeaderConstant.NAME_ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+		headers.put(HeaderConstant.NAME_ACCEPT_ENCODING, "gzip, deflate, br");
+		headers.put(HeaderConstant.NAME_ACCEPT_LANGUAGE, "en-US,en;q=0.8");
+		headers.put(HeaderConstant.NAME_CACHE_CONTROL, "no-cache");
+		headers.put(HeaderConstant.NAME_UPGRADE_INSECURE_REQUESTS, "1");
+		headers.put(HeaderConstant.NAME_USER_AGENT, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36");
+		return headers;
 	}
 
 	public boolean isUseCaches() {

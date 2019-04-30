@@ -29,12 +29,12 @@ public class HttpUtils {
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	private HttpRequest httpRequest = new HttpRequest();
+	/*private HttpRequest httpRequest = new HttpRequest();
 	
 	public HttpResponse sendGetInHttps(String url) {
 		httpRequest.setUrl(url);
 		return sendGetInHttps(httpRequest);
-	}
+	}*/
 	
 	public HttpResponse sendGetInHttps(HttpRequest request) {
 		
@@ -352,14 +352,14 @@ public class HttpUtils {
  
 	}*/
  
-	public HttpRequest getHttpRequest() {
+/*	public HttpRequest getHttpRequest() {
 		return httpRequest;
 	}
 
 	public void setHttpRequest(HttpRequest httpRequest) {
 		this.httpRequest = httpRequest;
 	}
-
+*/
 	public static void main(String[] args) {
 		//String requestUrl = "https://httpbin.org/get";
 		
