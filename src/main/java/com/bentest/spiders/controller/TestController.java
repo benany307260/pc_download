@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,9 @@ import com.alibaba.fastjson.JSON;
 import com.bentest.spiders.constant.CmdType;
 import com.bentest.spiders.entity.AmzCmdtask;
 import com.bentest.spiders.entity.AmzDepartment;
+import com.bentest.spiders.http.HttpConnection;
+import com.bentest.spiders.http.HttpConnectionFactory;
+import com.bentest.spiders.http.HttpConnectionPool;
 import com.bentest.spiders.repository.AmzCmdtaskRespository;
 import com.bentest.spiders.repository.AmzDepartmentRespository;
 
@@ -72,5 +76,27 @@ public class TestController {
 		
 		cmdtaskRespository.save(cmd102);
 		return true;
+	}
+	
+	@RequestMapping("/conntest")
+	public String request() {
+		try {
+			HttpConnectionFactory orderFactory = new HttpConnectionFactory();
+			GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+			config.setMaxTotal(5);
+			//设置获取连接超时时间
+			config.setMaxWaitMillis(1000);
+			HttpConnectionPool connectionPool = new HttpConnectionPool(orderFactory, config);
+			HttpConnection conn = connectionPool.borrowObject();
+			String url = "https://httpbin.org/get";
+			String resp = conn.sendGetUseHttps(url);
+			connectionPool.returnObject(conn);
+			//connectionPool.close();
+			return resp;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return e.getMessage();
+		}
 	}
 }
