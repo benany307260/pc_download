@@ -285,7 +285,7 @@ public class OkHttp2UtilForHttps{
 		request.setUrl(url);
 		
 		OkHttp2UtilForHttps okHttpUtil2 = new OkHttp2UtilForHttps();
-		okHttpUtil2.initOkHttpClient("1.58.10.231", 8118);
+		okHttpUtil2.initOkHttpClient("1.58.10.231", 8118); 
 		//okHttpUtil2.initOkHttpClient("115.85.206.193", 3012);
 		HttpResponse resp = okHttpUtil2.get(request);
 		System.out.println(resp.getContent());
