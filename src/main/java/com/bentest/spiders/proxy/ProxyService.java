@@ -16,9 +16,9 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bentest.spiders.entity.AmzProxy;
+import com.bentest.spiders.entity.AmzProxyIsp;
 import com.bentest.spiders.http.HttpUtils;
-import com.bentest.spiders.repository.AmzProxyRespository;
+import com.bentest.spiders.repository.AmzProxyIspRespository;
 
 import cn.hutool.core.util.StrUtil;
 
@@ -28,7 +28,7 @@ public class ProxyService {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private AmzProxyRespository amzProxyRespository;
+	private AmzProxyIspRespository amzProxyIspRespository;
 	
 	public List<ProxyInfo> getProxy(int count){
 		return getProxyForZhiMa(count);
@@ -48,12 +48,12 @@ public class ProxyService {
 		if(count < 1) {
 			return null;
 		}
-		List<AmzProxy> amzProxyList = amzProxyRespository.findByProxyType(1);
+		List<AmzProxyIsp> amzProxyList = amzProxyIspRespository.findByProxyType(1);
 		if(CollectionUtils.isEmpty(amzProxyList)) {
 			return null;
 		}
 		
-		AmzProxy amzProxy = amzProxyList.get(0);
+		AmzProxyIsp amzProxy = amzProxyList.get(0);
 		if(amzProxy == null) {
 			return null;
 		}

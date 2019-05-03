@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import com.bentest.spiders.entity.AmzProxy;
+import com.bentest.spiders.entity.AmzProxyIsp;
 @Repository
-public interface AmzProxyRespository extends JpaRepository<AmzProxy, Integer>, JpaSpecificationExecutor<AmzProxy> {
-	List<AmzProxy> findByProxyType(Integer proxyType);
+public interface AmzProxyIspRespository extends JpaRepository<AmzProxyIsp, Integer>, JpaSpecificationExecutor<AmzProxyIsp> {
+	List<AmzProxyIsp> findByProxyType(Integer proxyType);
 }
