@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
+import com.bentest.spiders.http2.OkHttp2UtilForHttps;
 import com.bentest.spiders.proxy.ProxyInfo;
 
 import cn.hutool.core.util.StrUtil;
@@ -31,8 +32,9 @@ public class HttpConnection {
 	
 	private ProxyInfo proxy;
 	
-	private HttpUtils httpUtils = new HttpUtils();
+	//private HttpUtils httpUtils = new HttpUtils();
 
+	private OkHttp2UtilForHttps httpUtils = null;
 	
 	public HttpConnection() {
 	}
@@ -41,9 +43,10 @@ public class HttpConnection {
 		this.id = id;
 		this.userAgent = userAgent;
 		this.proxy = proxy;
+		
 	}
 	
-	public String sendGetUseHttps(String url) {
+	public String sendGetUseH2(String url) {
 		if(StrUtil.isBlank(url)) {
 			log.error("http连接对象，发送get的https请求，请求url为空。");
 			return null;
@@ -60,17 +63,22 @@ public class HttpConnection {
 			log.error("http连接对象，发送get的https请求，userAgent为空。url="+url);
 			return null;
 		}
+		if(httpUtils == null) {
+			httpUtils = new OkHttp2UtilForHttps();
+			httpUtils.initOkHttpClient(proxy.getIp(), proxy.getPort());
+		}
 		
 		HttpRequest httpRequest = new HttpRequest();
 		httpRequest.setUseProxy(true);
 		httpRequest.setProxyIp(proxy.getIp());
 		httpRequest.setProxyPort(proxy.getPort());
+		httpRequest.setUrl(url);
 		
-		Map<String, String> headers = httpRequest.getHeaders();
+		Map<String, String> headers = httpRequest.getHeadersForH2();
 		headers.put(HeaderConstant.NAME_COOKIE, cookie);
 		headers.put(HeaderConstant.NAME_USER_AGENT, userAgent);
 		
-		HttpResponse response = httpUtils.sendGetInHttps(httpRequest);
+		HttpResponse response = httpUtils.get(httpRequest);
 		if(response == null) {
 			return null;
 		}

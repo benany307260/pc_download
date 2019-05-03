@@ -83,13 +83,13 @@ public class TestController {
 		try {
 			HttpConnectionFactory orderFactory = new HttpConnectionFactory();
 			GenericObjectPoolConfig config = new GenericObjectPoolConfig();
-			config.setMaxTotal(5);
+			config.setMaxTotal(1);
 			//设置获取连接超时时间
 			config.setMaxWaitMillis(1000);
 			HttpConnectionPool connectionPool = new HttpConnectionPool(orderFactory, config);
 			HttpConnection conn = connectionPool.borrowObject();
 			String url = "https://httpbin.org/get";
-			String resp = conn.sendGetUseHttps(url);
+			String resp = conn.sendGetUseH2(url);
 			connectionPool.returnObject(conn);
 			//connectionPool.close();
 			return resp;

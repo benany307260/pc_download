@@ -361,11 +361,14 @@ public class HttpUtils {
 	}
 */
 	public static void main(String[] args) {
-		//String requestUrl = "https://httpbin.org/get";
+		//String url = "https://httpbin.org/get";
+		String url = "https://www.ustc.edu.cn/";
 		
 		HttpRequest request = new HttpRequest();
-		request.setUrl("https://www.baidu.com/");
-		request.setUseProxy(false);
+		request.setUrl(url);
+		request.setUseProxy(true);
+		request.setProxyIp("1.58.10.231");
+		request.setProxyPort(8118);
 		
 		HttpUtils httpUtils = new HttpUtils();
 		

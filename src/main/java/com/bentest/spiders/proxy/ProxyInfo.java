@@ -13,6 +13,16 @@ public class ProxyInfo {
 	private long expireTime;
 	
 	private String expireTimeStr;
+	
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("ip=").append(ip).append(",")
+		.append("port=").append(port).append(",")
+		.append("getTime=").append(getTime).append(",")
+		.append("expireTime=").append(expireTime).append(",")
+		.append("expireTimeStr=").append(expireTimeStr).append(",");
+		return sb.toString();
+	}
 
 	public String getIp() {
 		return ip;

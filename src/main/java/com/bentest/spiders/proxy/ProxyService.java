@@ -112,6 +112,9 @@ public class ProxyService {
 	            
 	            Date date = DateUtils.parseDate(expireTime, Locale.TRADITIONAL_CHINESE, "yyyy-MM-dd hh:mm:ss");
 	            proxy.setExpireTime(date.getTime());
+	            
+	            log.info("获取芝麻代理的http代理，"+proxy.toString());
+	            
 	            proxyList.add(proxy);
 	        }
 			return proxyList;

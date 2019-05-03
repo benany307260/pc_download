@@ -9,7 +9,9 @@ public class HttpRequest {
 	
 	private Map<String, String> params = new HashMap<>();
 	
-	private Map<String, String> headers = initHeader();
+	private Map<String, String> headers = null;
+	
+	private Map<String, String> headersForH2 = initHeaderForH2();
 
 	private String charSet = "UTF-8";
 	
@@ -33,7 +35,7 @@ public class HttpRequest {
 		this.url = url;
 	}
 	
-	private Map<String,String> initHeader() {
+	private Map<String,String> initHeaderForH2() {
 		Map<String, String> headers = new HashMap<>();
 		headers.put(HeaderConstant.NAME_METHOD, "GET");
 		headers.put(HeaderConstant.NAME_SCHEME, "https");
@@ -44,6 +46,14 @@ public class HttpRequest {
 		headers.put(HeaderConstant.NAME_UPGRADE_INSECURE_REQUESTS, "1");
 		headers.put(HeaderConstant.NAME_USER_AGENT, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36");
 		return headers;
+	}
+
+	public Map<String, String> getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(Map<String, String> headers) {
+		this.headers = headers;
 	}
 
 	public boolean isUseCaches() {
@@ -70,12 +80,12 @@ public class HttpRequest {
 		this.params = params;
 	}
 
-	public Map<String, String> getHeaders() {
-		return headers;
+	public Map<String, String> getHeadersForH2() {
+		return headersForH2;
 	}
 
-	public void setHeaders(Map<String, String> headers) {
-		this.headers = headers;
+	public void setHeadersForH2(Map<String, String> headersForH2) {
+		this.headersForH2 = headersForH2;
 	}
 
 	public String getCharSet() {
