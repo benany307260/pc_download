@@ -13,6 +13,11 @@ public class SystemConfig {
 	private String scanCmdCron = "0/5 * * * * ?";
 	
 	/**
+	 * 扫描代理Cron表达式，默认每5s一次
+	 */
+	private String scanProxyCron = "0/5 * * * * ?";
+	
+	/**
 	 * 服务端节点编号，最大两位
 	 */
 	private int serverNode;
@@ -54,6 +59,14 @@ public class SystemConfig {
 
 	public void setAreaNode(int areaNode) {
 		this.areaNode = areaNode;
+	}
+
+	public String getScanProxyCron() {
+		return scanProxyCron;
+	}
+
+	public void setScanProxyCron(String scanProxyCron) {
+		this.scanProxyCron = scanProxyCron;
 	}
 	
 }
