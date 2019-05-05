@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -18,6 +19,7 @@ import com.bentest.spiders.repository.AmzUARespository;
 import cn.hutool.core.util.StrUtil;
 
 @Component
+@Order(10)
 public class LoadUAData implements ApplicationRunner {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());

@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 import com.bentest.spiders.entity.AmzProxy;
 @Repository
 public interface AmzProxyRespository extends JpaRepository<AmzProxy, Long>, JpaSpecificationExecutor<AmzProxy> {
-	List<AmzProxy> findByStatusTop200(int status);
+	List<AmzProxy> findTop200ByStatus(int status);
 }

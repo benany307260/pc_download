@@ -14,9 +14,10 @@ import com.alibaba.fastjson.JSON;
 import com.bentest.spiders.constant.CmdType;
 import com.bentest.spiders.entity.AmzCmdtask;
 import com.bentest.spiders.entity.AmzDepartment;
-import com.bentest.spiders.http.HttpConnection;
-import com.bentest.spiders.http.HttpConnectionFactory;
-import com.bentest.spiders.http.HttpConnectionPool;
+import com.bentest.spiders.httppool.HttpConnection;
+import com.bentest.spiders.httppool.HttpConnectionFactory;
+import com.bentest.spiders.httppool.HttpConnectionPool;
+import com.bentest.spiders.httppool.HttpPoolManager;
 import com.bentest.spiders.repository.AmzCmdtaskRespository;
 import com.bentest.spiders.repository.AmzDepartmentRespository;
 
@@ -81,20 +82,13 @@ public class TestController {
 	@RequestMapping("/conntest")
 	public String request() {
 		try {
-			HttpConnectionFactory orderFactory = new HttpConnectionFactory();
-			GenericObjectPoolConfig config = new GenericObjectPoolConfig();
-			config.setMaxTotal(1);
-			//设置获取连接超时时间
-			config.setMaxWaitMillis(1000);
-			HttpConnectionPool connectionPool = new HttpConnectionPool(orderFactory, config);
-			HttpConnection conn = connectionPool.borrowObject();
-			String url = "https://httpbin.org/get";
+			
+			HttpConnection conn = HttpPoolManager.getInstance().getConnection();
+			String url = "https://nghttp2.org/httpbin/get";
 			String resp = conn.sendGetUseH2(url);
-			connectionPool.returnObject(conn);
-			//connectionPool.close();
+			HttpPoolManager.getInstance().returnConnection(conn);
 			return resp;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return e.getMessage();
 		}

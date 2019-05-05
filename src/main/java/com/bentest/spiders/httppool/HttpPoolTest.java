@@ -1,8 +1,8 @@
-package com.bentest.spiders.http;
+package com.bentest.spiders.httppool;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
-public class HttpTest {
+public class HttpPoolTest {
 	public static void main(String[] args) throws Exception {
 		HttpConnectionFactory orderFactory = new HttpConnectionFactory();
         GenericObjectPoolConfig config = new GenericObjectPoolConfig();

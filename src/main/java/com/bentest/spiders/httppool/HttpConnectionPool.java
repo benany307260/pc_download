@@ -1,4 +1,4 @@
-package com.bentest.spiders.http;
+package com.bentest.spiders.httppool;
 
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.AbandonedConfig;
@@ -11,11 +11,11 @@ public class HttpConnectionPool extends GenericObjectPool<HttpConnection> {
         super(factory);
     }
 
-    public HttpConnectionPool(PooledObjectFactory<HttpConnection> factory, GenericObjectPoolConfig config) {
+    public HttpConnectionPool(PooledObjectFactory<HttpConnection> factory, GenericObjectPoolConfig<HttpConnection> config) {
         super(factory, config);
     }
 
-    public HttpConnectionPool(PooledObjectFactory<HttpConnection> factory, GenericObjectPoolConfig config, AbandonedConfig abandonedConfig) {
+    public HttpConnectionPool(PooledObjectFactory<HttpConnection> factory, GenericObjectPoolConfig<HttpConnection> config, AbandonedConfig abandonedConfig) {
         super(factory, config, abandonedConfig);
     }
 }

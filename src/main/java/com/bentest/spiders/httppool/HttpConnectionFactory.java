@@ -1,4 +1,4 @@
-package com.bentest.spiders.http;
+package com.bentest.spiders.httppool;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -8,6 +8,7 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bentest.spiders.http.UAUtils;
 import com.bentest.spiders.proxy.ProxyInfo;
 import com.bentest.spiders.proxy.ProxyService;
 import com.bentest.spiders.spring.SpringUtil;

@@ -80,7 +80,7 @@ public class ProxyService {
 	}
 	
 	private ProxyInfo getProxyInDB() {
-		List<AmzProxy> amzProxyList = amzProxyRespository.findByStatusTop200(0);
+		List<AmzProxy> amzProxyList = amzProxyRespository.findTop200ByStatus(0);
 		if(CollectionUtils.isEmpty(amzProxyList)) {
 			return null;
 		}
@@ -192,7 +192,7 @@ public class ProxyService {
 	            proxy.setExpireTimeStr(expireTime);
 	            proxy.setGetTime(getTime);
 	            
-	            Date date = DateUtils.parseDate(expireTime, Locale.TRADITIONAL_CHINESE, "yyyy-MM-dd hh:mm:ss");
+	            Date date = DateUtils.parseDate(expireTime, Locale.TRADITIONAL_CHINESE, "yyyy-MM-dd HH:mm:ss");
 	            proxy.setExpireTime(date.getTime());
 	            
 	            log.info("获取芝麻代理的http代理，"+proxy.toString());
@@ -207,17 +207,26 @@ public class ProxyService {
 	}
 	
 	public static void main(String[] args) {
-		String json = "{\"code\":0,\"success\":true,\"msg\":\"0\",\"data\":[{\"ip\":\"182.86.190.182\",\"port\":4282,\"expire_time\":\"2019-04-29 22:59:25\"}]}";
-		JSONObject jsonObject = JSON.parseObject(json);
-		Integer code = jsonObject.getInteger("code");
-		System.out.println(code);
-		JSONArray dataObj = jsonObject.getJSONArray("data");
-		int size = dataObj.size();
-        for (int i = 0; i < size; i++){
-            JSONObject jsonObj = dataObj.getJSONObject(i);
-            String ip = jsonObj.getString("ip");
-            System.out.println(ip);
-        }
+		try {
+			String json = "{\"code\":0,\"success\":true,\"msg\":\"0\",\"data\":[{\"ip\":\"182.86.190.182\",\"port\":4282,\"expire_time\":\"2019-05-05 15:48:28\"}]}";
+			JSONObject jsonObject = JSON.parseObject(json);
+			Integer code = jsonObject.getInteger("code");
+			System.out.println(code);
+			JSONArray dataObj = jsonObject.getJSONArray("data");
+			int size = dataObj.size();
+			for (int i = 0; i < size; i++){
+			    JSONObject jsonObj = dataObj.getJSONObject(i);
+			    String ip = jsonObj.getString("ip");
+			    System.out.println(ip);
+			    String expireTime = jsonObj.getString("expire_time");
+			    Date date = DateUtils.parseDate(expireTime, Locale.TRADITIONAL_CHINESE, "yyyy-MM-dd HH:mm:ss");
+			    System.out.println(date);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
 	}
 	
 }

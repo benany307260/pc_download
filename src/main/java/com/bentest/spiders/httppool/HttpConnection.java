@@ -1,4 +1,4 @@
-package com.bentest.spiders.http;
+package com.bentest.spiders.httppool;
 
 import java.net.HttpURLConnection;
 import java.util.HashMap;
@@ -9,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
+import com.bentest.spiders.http.HeaderConstant;
+import com.bentest.spiders.http.HttpRequest;
+import com.bentest.spiders.http.HttpResponse;
 import com.bentest.spiders.http2.OkHttp2UtilForHttps;
 import com.bentest.spiders.proxy.ProxyInfo;
 

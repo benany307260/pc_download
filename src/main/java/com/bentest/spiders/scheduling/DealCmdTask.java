@@ -31,7 +31,7 @@ public class DealCmdTask {
 		//查询指令表 是否有新增操作
 		List<AmzCmdtask> cmdtaskList = cmdMapper.getCmdTask(cmdTaskId);
 		if(cmdtaskList == null || cmdtaskList.size() < 1) {
-			log.info("处理指令，没有新的指令信息，cmdTaskId:"+cmdTaskId);
+			log.debug("处理指令，没有新的指令信息，cmdTaskId:"+cmdTaskId);
 			return;
 		}
 		
