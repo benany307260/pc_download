@@ -3,6 +3,8 @@ package com.bentest.spiders.http;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.util.CollectionUtils;
+
 public class HttpRequest {
 	
 	private String url;
@@ -35,10 +37,25 @@ public class HttpRequest {
 		this.url = url;
 	}
 	
-	private Map<String,String> initHeaderForH2() {
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("url").append("=").append(url).append(",");
+		sb.append("useProxy").append("=").append(useProxy).append(",");
+		sb.append("proxyIp").append("=").append(proxyIp).append(",");
+		sb.append("proxyPort").append("=").append(proxyPort).append(",");
+		if(!CollectionUtils.isEmpty(headersForH2)) {
+			sb.append("headersForH2").append("：").append(headersForH2.toString()).append(",");
+		}
+		if(!CollectionUtils.isEmpty(params)) {
+			sb.append("params").append("：").append(params.toString()).append(",");
+		}
+		return sb.toString();
+	}
+	
+	public Map<String,String> initHeaderForH2() {
 		Map<String, String> headers = new HashMap<>();
-		headers.put(HeaderConstant.NAME_METHOD, "GET");
-		headers.put(HeaderConstant.NAME_SCHEME, "https");
+		//headers.put(HeaderConstant.NAME_METHOD, "GET");
+		//headers.put(HeaderConstant.NAME_SCHEME, "https");
 		headers.put(HeaderConstant.NAME_ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
 		headers.put(HeaderConstant.NAME_ACCEPT_ENCODING, "gzip, deflate, br");
 		headers.put(HeaderConstant.NAME_ACCEPT_LANGUAGE, "en-US,en;q=0.8");

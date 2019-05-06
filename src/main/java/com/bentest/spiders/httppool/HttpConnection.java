@@ -71,6 +71,77 @@ public class HttpConnection {
 			httpUtils.initOkHttpClient(proxy.getIp(), proxy.getPort());
 		}
 		
+		/*HttpRequest httpRequest = new HttpRequest();
+		httpRequest.setUseProxy(true);
+		httpRequest.setProxyIp(proxy.getIp());
+		httpRequest.setProxyPort(proxy.getPort());
+		httpRequest.setUrl(url);
+		
+		Map<String, String> headers = httpRequest.getHeadersForH2();
+		headers.put(HeaderConstant.NAME_COOKIE, cookie);
+		headers.put(HeaderConstant.NAME_USER_AGENT, userAgent);
+		
+		HttpResponse response = httpUtils.get(httpRequest);*/
+		
+		HttpResponse response = get(url);
+		
+		if(response == null) {
+			return null;
+		}
+		if(response.getCode() != HttpURLConnection.HTTP_OK && response.getCode() != HttpURLConnection.HTTP_MOVED_TEMP) {
+			log.error("http连接对象，发送get的https请求，响应状态码不为200/302，code="+response.getCode()+",url="+url);
+			return null;
+		}
+		
+		setCookie(response);
+		
+		if(response.getCode() == HttpURLConnection.HTTP_OK) {
+			return response.getContent();
+		}
+		if(response.getCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+			String location = getRedirectUrl(response);
+			String content = redirectGet(location);
+			return content;
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取重定向url
+	 */
+	private String getRedirectUrl(HttpResponse response) {
+		if(CollectionUtils.isEmpty(response.getHeaders())) {
+			return null;
+		}
+		if(CollectionUtils.isEmpty(response.getHeaders().get("location"))) {
+			return null;
+		}
+		String location = response.getHeaders().get("location").get(0);
+		if(StrUtil.isBlank(location)) {
+			return null;
+		}
+		String url = response.getScheme() + "://" + response.getHost() + location;
+		return url;
+	}
+	
+	private String redirectGet(String url) {
+		if(StrUtil.isBlank(url)) {
+			return null;
+		}
+		HttpResponse response = get(url);
+		if(response == null) {
+			return null;
+		}
+		if(response.getCode() == HttpURLConnection.HTTP_OK) {
+			return response.getContent();
+		}
+		if(response.getCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+			log.info("http连接对象，请求后重定向，又返回302，不再继续。"+response.toString());
+		}
+		return null;
+	}
+	
+	private HttpResponse get(String url) {
 		HttpRequest httpRequest = new HttpRequest();
 		httpRequest.setUseProxy(true);
 		httpRequest.setProxyIp(proxy.getIp());
@@ -82,17 +153,7 @@ public class HttpConnection {
 		headers.put(HeaderConstant.NAME_USER_AGENT, userAgent);
 		
 		HttpResponse response = httpUtils.get(httpRequest);
-		if(response == null) {
-			return null;
-		}
-		if(response.getCode() != HttpURLConnection.HTTP_OK) {
-			log.error("http连接对象，发送get的https请求，响应状态码不为200ok，code="+response.getCode()+",url="+url);
-			return null;
-		}
-		
-		setCookie(response);
-		
-		return response.getContent();
+		return response;
 	}
 	
 	private boolean setCookie(HttpResponse response) {

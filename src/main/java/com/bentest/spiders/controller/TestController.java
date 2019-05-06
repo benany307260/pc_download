@@ -84,10 +84,13 @@ public class TestController {
 		try {
 			
 			HttpConnection conn = HttpPoolManager.getInstance().getConnection();
-			String url = "https://nghttp2.org/httpbin/get";
+			//String url = "https://www.amazon.com/s/browse?_encoding=UTF8&node=4954955011&ref_=nav_shopall-export_nav_mw_sbd_intl_arts";
+			//String url = "https://www.ustc.edu.cn/";
+			String url = "https://www.yale.edu/";
 			String resp = conn.sendGetUseH2(url);
 			HttpPoolManager.getInstance().returnConnection(conn);
-			return resp;
+			System.out.println(resp);
+			return "true";
 		} catch (Exception e) {
 			e.printStackTrace();
 			return e.getMessage();

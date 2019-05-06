@@ -31,6 +31,7 @@ import com.bentest.spiders.http.HttpResponse;
 import cn.hutool.core.util.StrUtil;
 import okhttp3.ConnectionPool;
 import okhttp3.Headers;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -65,6 +66,8 @@ public class OkHttp2UtilForHttps{
 			builder.connectTimeout(config.getConnTimeout(), TimeUnit.SECONDS);
 			builder.readTimeout(config.getReadTimeout(), TimeUnit.SECONDS);
 			builder.writeTimeout(config.getWriteTimeout(),TimeUnit.SECONDS);
+			builder.followRedirects(false);//禁制OkHttp的重定向操作，自己处理重定向
+			builder.followSslRedirects(false);
 			
 			if(config.isUseProxy()) {
 				if(StrUtil.isBlank(config.getProxyIp())) {
@@ -158,22 +161,26 @@ public class OkHttp2UtilForHttps{
     public HttpResponse get(HttpRequest requestParam) {
     	
     	if(requestParam == null) {
-			log.error("https发送get请求，request为null。");
+			log.error("okhttp发送get请求，request为null。");
 			return null;
 		}
 		if (StringUtils.isBlank(requestParam.getUrl())) {
-			log.error("https发送get请求，url为空。");
+			log.error("okhttp发送get请求，url为空。");
 			return null;
 		}
 		if(okHttpClient == null) {
-			log.error("https发送get请求，okHttpClient为空。");
+			log.error("okhttp发送get请求，okHttpClient为空。");
 			return null;
 		}
     	
+		log.info("okhttp发送get请求。"+requestParam.toString());
+		
         String urlAndParam = getRequestUrlWithParam(requestParam.getUrl(), requestParam.getParams());
         
         //构建请求
         Request.Builder requestBuilder = new Request.Builder().url(urlAndParam);
+        
+        //setRequestHeader(requestParam);
         
         // 设置请求头
 		if (!CollectionUtils.isEmpty(requestParam.getHeadersForH2())) {
@@ -190,11 +197,17 @@ public class OkHttp2UtilForHttps{
         try { 
             response = okHttpClient.newCall(request).execute();
             if(response == null) {
-            	log.error("https发送get请求，响应为null。");
+            	log.error("okhttp发送get请求，响应为null。");
     			return null;
             }
-            log.info("https发送get请求，"+response.toString());
+            log.info("okhttp发送get请求，响应。"+response.toString());
             HttpResponse responseParam = new HttpResponse();
+            
+            String host = getRequestHost(request);
+            responseParam.setHost(host);
+            String scheme = getRequestScheme(request);
+            responseParam.setScheme(scheme);
+            
             Map<String, List<String>> headers = getHeaders(response.headers());
             responseParam.setHeaders(headers);
             
@@ -209,13 +222,66 @@ public class OkHttp2UtilForHttps{
             
             return responseParam;
         } catch (Exception e) {
-        	log.error("https发送get请求，异常。", e);
+        	log.error("okhttp发送get请求，异常。", e);
             return null;
         } finally {
             if (response != null) {
                 response.close();
             }
         }
+    }
+    
+    /*private boolean setRequestHeader(HttpRequest requestParam) {
+    	Map<String, String> headersForH2 = requestParam.getHeadersForH2();
+    	// 设置请求头
+		if (CollectionUtils.isEmpty(headersForH2)) {
+			headersForH2 = requestParam.initHeaderForH2();
+		}
+		
+		try {
+			URL url = new URL(requestParam.getUrl());
+			String host = url.getHost();
+			String path = url.getPath();
+			
+			headersForH2.put(HeaderConstant.NAME_AUTHORITY, host);
+			headersForH2.put(HeaderConstant.NAME_PATH, path);
+			requestParam.setHeadersForH2(headersForH2);
+			return true;
+		} catch (MalformedURLException e) {
+			log.error("okhttp设置请求header，异常。", e);
+			return false;
+		}
+		
+    }*/
+    
+    private String getRequestHost(Request request) {
+    	if(request == null) {
+    		return null;
+    	}
+    	HttpUrl httpUrl = request.url();
+    	if(httpUrl == null) {
+    		return null;
+    	}
+    	String host = httpUrl.host();
+    	if(StrUtil.isBlank(host)) {
+    		return null;
+    	}
+    	return host;
+    }
+    
+    private String getRequestScheme(Request request) {
+    	if(request == null) {
+    		return null;
+    	}
+    	HttpUrl httpUrl = request.url();
+    	if(httpUrl == null) {
+    		return null;
+    	}
+    	String scheme = httpUrl.scheme();
+    	if(StrUtil.isBlank(scheme)) {
+    		return null;
+    	}
+    	return scheme;
     }
     
     private Map<String, List<String>> getHeaders(Headers okhttpHeaders){
@@ -230,6 +296,7 @@ public class OkHttp2UtilForHttps{
 			for (int i = 0; i < headersLength; i++){
 				String headerName = okhttpHeaders.name(i);
 				String headerValue = okhttpHeaders.value(i);
+				//System.out.println(headerName+": "+headerValue);
 				if(StrUtil.isBlank(headerName)) {
 					continue;
 				}
@@ -276,16 +343,17 @@ public class OkHttp2UtilForHttps{
     public static void main(String[] args) {
     	
     	//String url = "https://httpbin.org/get";
-    	String url = "https://nghttp2.org/httpbin/get";
+    	//String url = "https://nghttp2.org/httpbin/get";
     	//String url = "https://www.baidu.com/";
     	//String url = "https://www.ustc.edu.cn/";
-    	//String url = "https://www.yale.edu/";
+    	String url = "https://www.yale.edu/";
     	
     	HttpRequest request = new HttpRequest();
 		request.setUrl(url);
 		
 		OkHttp2UtilForHttps okHttpUtil2 = new OkHttp2UtilForHttps();
-		okHttpUtil2.initOkHttpClient("1.58.10.231", 8118); 
+		okHttpUtil2.initOkHttpClient();
+		//okHttpUtil2.initOkHttpClient("1.58.10.231", 8118); 
 		//okHttpUtil2.initOkHttpClient("115.85.206.193", 3012);
 		HttpResponse resp = okHttpUtil2.get(request);
 		System.out.println(resp.getContent());
