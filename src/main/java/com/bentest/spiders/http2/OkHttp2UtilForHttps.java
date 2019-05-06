@@ -200,7 +200,6 @@ public class OkHttp2UtilForHttps{
             	log.error("okhttp发送get请求，响应为null。");
     			return null;
             }
-            log.info("okhttp发送get请求，响应。"+response.toString());
             HttpResponse responseParam = new HttpResponse();
             
             String host = getRequestHost(request);
@@ -210,6 +209,7 @@ public class OkHttp2UtilForHttps{
             
             Map<String, List<String>> headers = getHeaders(response.headers());
             responseParam.setHeaders(headers);
+            log.info("okhttp发送get请求，响应。"+response.toString()+",headers:"+response.headers().toString());
             
             int status = response.code();
             responseParam.setCode(status);
