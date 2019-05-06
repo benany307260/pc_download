@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,11 +14,11 @@ import com.bentest.spiders.constant.CmdType;
 import com.bentest.spiders.entity.AmzCmdtask;
 import com.bentest.spiders.entity.AmzDepartment;
 import com.bentest.spiders.httppool.HttpConnection;
-import com.bentest.spiders.httppool.HttpConnectionFactory;
-import com.bentest.spiders.httppool.HttpConnectionPool;
 import com.bentest.spiders.httppool.HttpPoolManager;
 import com.bentest.spiders.repository.AmzCmdtaskRespository;
 import com.bentest.spiders.repository.AmzDepartmentRespository;
+
+import cn.hutool.core.io.file.FileWriter;
 
 @RestController
 public class TestController {
@@ -84,12 +83,15 @@ public class TestController {
 		try {
 			
 			HttpConnection conn = HttpPoolManager.getInstance().getConnection();
-			//String url = "https://www.amazon.com/s/browse?_encoding=UTF8&node=4954955011&ref_=nav_shopall-export_nav_mw_sbd_intl_arts";
+			String url = "https://www.amazon.com/s/browse?_encoding=UTF8&node=4954955011&ref_=nav_shopall-export_nav_mw_sbd_intl_arts";
 			//String url = "https://www.ustc.edu.cn/";
-			String url = "https://www.yale.edu/";
+			//String url = "https://www.yale.edu/";
 			String resp = conn.sendGetUseH2(url);
 			HttpPoolManager.getInstance().returnConnection(conn);
-			System.out.println(resp);
+			FileWriter fileWriter = new FileWriter("C:\\Users\\lenovo\\Desktop\\temp.html");
+			fileWriter.write(resp);
+			
+			//System.out.println(resp);
 			return "true";
 		} catch (Exception e) {
 			e.printStackTrace();

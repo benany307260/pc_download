@@ -343,10 +343,10 @@ public class OkHttp2UtilForHttps{
     public static void main(String[] args) {
     	
     	//String url = "https://httpbin.org/get";
-    	//String url = "https://nghttp2.org/httpbin/get";
+    	String url = "https://nghttp2.org/httpbin/get";
     	//String url = "https://www.baidu.com/";
     	//String url = "https://www.ustc.edu.cn/";
-    	String url = "https://www.yale.edu/";
+    	//String url = "https://www.yale.edu/";
     	
     	HttpRequest request = new HttpRequest();
 		request.setUrl(url);

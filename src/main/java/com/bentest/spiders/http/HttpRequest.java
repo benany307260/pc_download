@@ -57,7 +57,7 @@ public class HttpRequest {
 		//headers.put(HeaderConstant.NAME_METHOD, "GET");
 		//headers.put(HeaderConstant.NAME_SCHEME, "https");
 		headers.put(HeaderConstant.NAME_ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
-		headers.put(HeaderConstant.NAME_ACCEPT_ENCODING, "gzip, deflate, br");
+		//headers.put(HeaderConstant.NAME_ACCEPT_ENCODING, "gzip, deflate, br");//配置gzip，okhttp会认为你要直接解码，这里不要配置，他会默认加上
 		headers.put(HeaderConstant.NAME_ACCEPT_LANGUAGE, "en-US,en;q=0.8");
 		headers.put(HeaderConstant.NAME_CACHE_CONTROL, "no-cache");
 		headers.put(HeaderConstant.NAME_UPGRADE_INSECURE_REQUESTS, "1");
