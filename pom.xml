@@ -126,6 +126,12 @@
 		    <version>3.14.1</version>
 		</dependency>
 		
+		<dependency>
+		    <groupId>net.sourceforge.htmlunit</groupId>
+		    <artifactId>htmlunit</artifactId>
+		</dependency>
+
+		
 	</dependencies>
 
 	<build>

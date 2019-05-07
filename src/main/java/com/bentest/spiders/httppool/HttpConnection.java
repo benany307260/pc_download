@@ -12,7 +12,7 @@ import org.springframework.util.CollectionUtils;
 import com.bentest.spiders.http.HeaderConstant;
 import com.bentest.spiders.http.HttpRequest;
 import com.bentest.spiders.http.HttpResponse;
-import com.bentest.spiders.http2.OkHttp2UtilForHttps;
+import com.bentest.spiders.httpunit.HtmlUnitClient;
 import com.bentest.spiders.proxy.ProxyInfo;
 
 import cn.hutool.core.util.StrUtil;
@@ -37,7 +37,7 @@ public class HttpConnection {
 	
 	//private HttpUtils httpUtils = new HttpUtils();
 
-	private OkHttp2UtilForHttps httpUtils = null;
+	private HtmlUnitClient httpUtils = null;
 	
 	public HttpConnection() {
 	}
@@ -49,7 +49,7 @@ public class HttpConnection {
 		
 	}
 	
-	public String sendGetUseH2(String url) {
+	public String send(String url) {
 		if(StrUtil.isBlank(url)) {
 			log.error("http连接对象，发送get的https请求，请求url为空。");
 			return null;
@@ -67,8 +67,8 @@ public class HttpConnection {
 			return null;
 		}
 		if(httpUtils == null) {
-			httpUtils = new OkHttp2UtilForHttps();
-			httpUtils.initOkHttpClient(proxy.getIp(), proxy.getPort());
+			httpUtils = new HtmlUnitClient();
+			httpUtils.initHttpUnit(proxy.getIp(), proxy.getPort());
 		}
 		
 		/*HttpRequest httpRequest = new HttpRequest();
@@ -95,14 +95,14 @@ public class HttpConnection {
 		
 		setCookie(response);
 		
-		if(response.getCode() == HttpURLConnection.HTTP_OK) {
+		/*if(response.getCode() == HttpURLConnection.HTTP_OK) {
 			return response.getContent();
 		}
 		if(response.getCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
 			String location = getRedirectUrl(response);
 			String content = redirectGet(location);
 			return content;
-		}
+		}*/
 		return null;
 	}
 	

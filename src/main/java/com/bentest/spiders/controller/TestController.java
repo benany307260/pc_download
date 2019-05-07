@@ -86,7 +86,7 @@ public class TestController {
 			String url = "https://www.amazon.com/s/browse?_encoding=UTF8&node=4954955011&ref_=nav_shopall-export_nav_mw_sbd_intl_arts";
 			//String url = "https://www.ustc.edu.cn/";
 			//String url = "https://www.yale.edu/";
-			String resp = conn.sendGetUseH2(url);
+			String resp = conn.send(url);
 			HttpPoolManager.getInstance().returnConnection(conn);
 			FileWriter fileWriter = new FileWriter("C:\\Users\\30726\\Desktop\\temp.html");
 			fileWriter.write(resp);
