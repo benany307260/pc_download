@@ -19,6 +19,7 @@ import com.bentest.spiders.repository.AmzCmdtaskRespository;
 import com.bentest.spiders.repository.AmzDepartmentRespository;
 
 import cn.hutool.core.io.file.FileWriter;
+import cn.hutool.core.util.StrUtil;
 
 @RestController
 public class TestController {
@@ -83,10 +84,13 @@ public class TestController {
 		try {
 			
 			HttpConnection conn = HttpPoolManager.getInstance().getConnection();
-			String url = "https://www.amazon.com/s/browse?_encoding=UTF8&node=4954955011&ref_=nav_shopall-export_nav_mw_sbd_intl_arts";
+			//String url = "https://www.amazon.com/s/browse?_encoding=UTF8&node=4954955011&ref_=nav_shopall-export_nav_mw_sbd_intl_arts";
 			//String url = "https://www.ustc.edu.cn/";
-			//String url = "https://www.yale.edu/";
+			String url = "https://www.yale.edu/";
 			String resp = conn.send(url);
+			if(StrUtil.isBlank(resp)) {
+				return "false";
+			}
 			HttpPoolManager.getInstance().returnConnection(conn);
 			FileWriter fileWriter = new FileWriter("C:\\Users\\30726\\Desktop\\temp.html");
 			fileWriter.write(resp);
