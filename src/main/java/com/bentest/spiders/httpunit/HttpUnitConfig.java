@@ -1,5 +1,7 @@
 package com.bentest.spiders.httpunit;
 
+import com.bentest.spiders.httppool.BrowserType;
+
 public class HttpUnitConfig {
 	
 	private String charSet = "UTF-8";
@@ -18,8 +20,18 @@ public class HttpUnitConfig {
 	
 	private boolean useCaches = false;
 	
+	private BrowserType browserType = BrowserType.Chrome;
+	
 	public HttpUnitConfig() {
 		
+	}
+
+	public BrowserType getBrowserType() {
+		return browserType;
+	}
+
+	public void setBrowserType(BrowserType browserType) {
+		this.browserType = browserType;
 	}
 
 	public int getWriteTimeout() {

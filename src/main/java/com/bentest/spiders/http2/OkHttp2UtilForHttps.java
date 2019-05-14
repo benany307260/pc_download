@@ -343,17 +343,18 @@ public class OkHttp2UtilForHttps{
     public static void main(String[] args) {
     	
     	//String url = "https://httpbin.org/get";
-    	String url = "https://nghttp2.org/httpbin/get";
+    	//String url = "https://nghttp2.org/httpbin/get";
     	//String url = "https://www.baidu.com/";
     	//String url = "https://www.ustc.edu.cn/";
     	//String url = "https://www.yale.edu/";
+    	String url = "https://www.amazon.com/s/browse?_encoding=UTF8&node=4954955011&ref_=nav_shopall-export_nav_mw_sbd_intl_arts";
     	
     	HttpRequest request = new HttpRequest();
 		request.setUrl(url);
 		
 		OkHttp2UtilForHttps okHttpUtil2 = new OkHttp2UtilForHttps();
-		okHttpUtil2.initOkHttpClient();
-		//okHttpUtil2.initOkHttpClient("1.58.10.231", 8118); 
+		//okHttpUtil2.initOkHttpClient();
+		okHttpUtil2.initOkHttpClient("220.186.173.230", 4207); 
 		//okHttpUtil2.initOkHttpClient("115.85.206.193", 3012);
 		HttpResponse resp = okHttpUtil2.get(request);
 		System.out.println(resp.getContent());

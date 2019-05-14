@@ -1,6 +1,5 @@
 package com.bentest.spiders.sys;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -15,8 +14,6 @@ import org.springframework.util.CollectionUtils;
 import com.bentest.spiders.entity.AmzUA;
 import com.bentest.spiders.http.UAUtils;
 import com.bentest.spiders.repository.AmzUARespository;
-
-import cn.hutool.core.util.StrUtil;
 
 @Component
 @Order(10)
@@ -37,7 +34,7 @@ public class LoadUAData implements ApplicationRunner {
 			}
 			log.info("加载UA数据，从数据库获取数据"+amzUAList.size()+"条。");
 			
-			List<String> uaList = new ArrayList<>();
+			/*List<String> uaList = new ArrayList<>();
 			for(AmzUA ua : amzUAList) {
 				if(ua == null) {
 					continue;
@@ -46,10 +43,10 @@ public class LoadUAData implements ApplicationRunner {
 					continue;
 				}
 				uaList.add(ua.getUa());
-			}
+			}*/
 			
-			UAUtils.setUaList(uaList);
-			log.info("加载UA数据，"+uaList.size()+"条。");
+			UAUtils.setUaList(amzUAList);
+			log.info("加载UA数据，"+amzUAList.size()+"条。");
 		} catch (Exception e) {
 			log.error("加载UA数据，异常。", e);
 		}

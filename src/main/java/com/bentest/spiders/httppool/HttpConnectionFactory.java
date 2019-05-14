@@ -8,7 +8,6 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bentest.spiders.http.UAUtils;
 import com.bentest.spiders.proxy.ProxyInfo;
 import com.bentest.spiders.proxy.ProxyService;
 import com.bentest.spiders.spring.SpringUtil;
@@ -23,7 +22,6 @@ public class HttpConnectionFactory extends BasePooledObjectFactory<HttpConnectio
     public HttpConnection create() throws Exception {
     	
     	int id = idCount.getAndAdd(1);
-    	String ua = UAUtils.getRandomUA();
     	
     	ProxyService proxyService = (ProxyService)SpringUtil.getBean("proxyService");
     	/*WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
@@ -35,7 +33,7 @@ public class HttpConnectionFactory extends BasePooledObjectFactory<HttpConnectio
     		throw new Exception("http连接池，创建连接，获取不到代理IP对象");
     	}
     	
-    	HttpConnection conn = new HttpConnection(id, ua, proxy);
+    	HttpConnection conn = new HttpConnection(id, proxy);
     	
     	log.info("http连接池，创建连接。"+conn.toString());
     	

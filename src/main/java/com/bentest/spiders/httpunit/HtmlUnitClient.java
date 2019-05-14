@@ -12,6 +12,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.bentest.spiders.http.HttpRequest;
 import com.bentest.spiders.http.HttpResponse;
+import com.bentest.spiders.httppool.BrowserType;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.Page;
@@ -33,11 +34,12 @@ public class HtmlUnitClient {
 		return initHttpUnit(config);
 	}
 	
-	public boolean initHttpUnit(String proxyIp, int proxyPort) {
+	public boolean initHttpUnit(String proxyIp, int proxyPort, BrowserType browserType) {
 		HttpUnitConfig config = new HttpUnitConfig();
 		config.setUseProxy(true);
 		config.setProxyIp(proxyIp);
 		config.setProxyPort(proxyPort);
+		config.setBrowserType(browserType);
 		
 		return initHttpUnit(config);
 	}
@@ -45,7 +47,23 @@ public class HtmlUnitClient {
 	public boolean initHttpUnit(HttpUnitConfig config) {
 		
 		try {
-			wc = new WebClient(BrowserVersion.CHROME);
+			switch(config.getBrowserType()) {
+			case Chrome :
+				wc = new WebClient(BrowserVersion.CHROME);
+				break;
+			case Firefox :
+				wc = new WebClient(BrowserVersion.FIREFOX_60);
+				break;
+			case IE :
+				wc = new WebClient(BrowserVersion.INTERNET_EXPLORER);
+				break;
+			case Edge :
+				wc = new WebClient(BrowserVersion.EDGE);
+				break;
+				
+			default:
+				wc = new WebClient(BrowserVersion.CHROME);
+			}
 			
 			if(config.isUseProxy()) {
 				if(StrUtil.isBlank(config.getProxyIp())) {
@@ -172,10 +190,19 @@ public class HtmlUnitClient {
     	//String url = "https://www.baidu.com/";
     	//String url = "https://www.ustc.edu.cn/";
     	//String url = "https://www.yale.edu/";
+    	//String url = "https://www.amazon.com/s/browse?_encoding=UTF8&node=4954955011&ref_=nav_shopall-export_nav_mw_sbd_intl_arts";
 		
 		HtmlUnitClient client = new HtmlUnitClient();
 		//client.initHttpUnit();
-		client.initHttpUnit("180.104.107.46", 45700);
+		
+		/*String ip = "112.85.149.178";
+		int port = 9999;*/
+		
+		String ip = "220.186.173.230";
+		int port = 4207;
+		
+		client.initHttpUnit(ip, port, BrowserType.Chrome);
+		
 		
 		HttpRequest request = new HttpRequest();
 		request.setUrl(url);

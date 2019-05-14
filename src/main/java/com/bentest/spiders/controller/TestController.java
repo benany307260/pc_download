@@ -81,18 +81,19 @@ public class TestController {
 	
 	@RequestMapping("/conntest")
 	public String request() {
+		HttpConnection conn = HttpPoolManager.getInstance().getConnection();
 		try {
 			
-			HttpConnection conn = HttpPoolManager.getInstance().getConnection();
 			//String url = "https://www.amazon.com/s/browse?_encoding=UTF8&node=4954955011&ref_=nav_shopall-export_nav_mw_sbd_intl_arts";
 			//String url = "https://www.ustc.edu.cn/";
 			String url = "https://www.yale.edu/";
+			//String url = "https://nghttp2.org/httpbin/get";
 			String resp = conn.send(url);
 			if(StrUtil.isBlank(resp)) {
 				return "false";
 			}
-			HttpPoolManager.getInstance().returnConnection(conn);
-			FileWriter fileWriter = new FileWriter("C:\\Users\\30726\\Desktop\\temp.html");
+			
+			FileWriter fileWriter = new FileWriter("D:\\temp\\temp.html");
 			fileWriter.write(resp);
 			
 			//System.out.println(resp);
@@ -100,6 +101,9 @@ public class TestController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return e.getMessage();
+		}
+		finally {
+			HttpPoolManager.getInstance().returnConnection(conn);
 		}
 	}
 }

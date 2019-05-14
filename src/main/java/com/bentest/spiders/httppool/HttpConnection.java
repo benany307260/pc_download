@@ -9,9 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
+import com.bentest.spiders.entity.AmzUA;
 import com.bentest.spiders.http.HeaderConstant;
 import com.bentest.spiders.http.HttpRequest;
 import com.bentest.spiders.http.HttpResponse;
+import com.bentest.spiders.http.UAUtils;
 import com.bentest.spiders.httpunit.HtmlUnitClient;
 import com.bentest.spiders.proxy.ProxyInfo;
 
@@ -24,6 +26,8 @@ public class HttpConnection {
 	private int id;
 	
 	private String userAgent;
+	
+	private BrowserType browserType;
 	
 	private String cookie;
 	
@@ -42,9 +46,15 @@ public class HttpConnection {
 	public HttpConnection() {
 	}
 	
-	public HttpConnection(int id, String userAgent, ProxyInfo proxy) {
+	/*public HttpConnection(int id, String userAgent, ProxyInfo proxy) {
 		this.id = id;
 		this.userAgent = userAgent;
+		this.proxy = proxy;
+		
+	}*/
+	
+	public HttpConnection(int id, ProxyInfo proxy) {
+		this.id = id;
 		this.proxy = proxy;
 		
 	}
@@ -62,13 +72,16 @@ public class HttpConnection {
 			log.error("http连接对象，发送get的https请求，代理port为0。url="+url);
 			return null;
 		}
-		if(StrUtil.isBlank(userAgent)) {
-			log.error("http连接对象，发送get的https请求，userAgent为空。url="+url);
-			return null;
+		if(userAgent == null) {
+			boolean result = initUA();
+			if(!result) {
+				log.error("http连接对象，发送get的https请求，初始化ua失败。url="+url);
+				return null;
+			}
 		}
 		if(httpUtils == null) {
 			httpUtils = new HtmlUnitClient();
-			httpUtils.initHttpUnit(proxy.getIp(), proxy.getPort());
+			httpUtils.initHttpUnit(proxy.getIp(), proxy.getPort(), browserType);
 		}
 		
 		/*HttpRequest httpRequest = new HttpRequest();
@@ -103,7 +116,38 @@ public class HttpConnection {
 			String content = redirectGet(location);
 			return content;
 		}*/
-		return null;
+		return response.getContent();
+	}
+	
+	private boolean initUA() {
+		AmzUA ua = UAUtils.getRandomUA();
+		if(ua == null) {
+			log.error("http连接对象，初始化ua，获取不到ua对象。");
+			return false;
+		}
+		userAgent = ua.getUa();
+		if(StrUtil.isBlank(userAgent)) {
+			log.error("http连接对象，初始化ua，获取不到ua字符串为空。");
+			return false;
+		}
+		
+		switch(ua.getBrowserType()) {
+		case "Chrome":
+			browserType = BrowserType.Chrome;
+			break;
+		case "Firefox":
+			browserType = BrowserType.Firefox;
+			break;
+		case "IE":
+			browserType = BrowserType.IE;
+			break;
+		case "Edge":
+			browserType = BrowserType.Edge;
+			break;
+		default:
+			browserType = BrowserType.Chrome;
+		}
+		return true;
 	}
 	
 	/**
@@ -270,6 +314,14 @@ public class HttpConnection {
 
 	public void setCookie(String cookie) {
 		this.cookie = cookie;
+	}
+
+	public BrowserType getBrowserType() {
+		return browserType;
+	}
+
+	public void setBrowserType(BrowserType browserType) {
+		this.browserType = browserType;
 	}
 
 	/*public HttpUtils getHttpUtils() {
