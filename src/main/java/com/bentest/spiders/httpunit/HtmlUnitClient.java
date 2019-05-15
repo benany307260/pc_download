@@ -1,15 +1,19 @@
 package com.bentest.spiders.httpunit;
 
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.CharSet;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
+import com.bentest.spiders.http.HeaderConstant;
 import com.bentest.spiders.http.HttpRequest;
 import com.bentest.spiders.http.HttpResponse;
 import com.bentest.spiders.httppool.BrowserType;
@@ -18,6 +22,7 @@ import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 
@@ -117,8 +122,18 @@ public class HtmlUnitClient {
 			System.out.println(content);*/
 			
 			//HtmlPage page = wc.getPage(requestParam.getUrl());
-			Page page = wc.getPage(requestParam.getUrl());
+        	
+        	URL link=new URL(requestParam.getUrl());
+        	WebRequest request=new WebRequest(link);
+        	Charset charset = Charset.forName("UTF-8");
+            request.setCharset(charset);  
+            //request.setProxyHost("120.120.120.x");  
+            //request.setProxyPort(8080);  
+            request.setAdditionalHeader(HeaderConstant.NAME_REFERER, "https://www.amazon.com");//设置请求报文头里的refer字段  
+            ////设置请求报文头里的User-Agent字段  
+            request.setAdditionalHeader(HeaderConstant.NAME_USER_AGENT, requestParam.getHeaders().get(HeaderConstant.NAME_USER_AGENT)); 
 			
+            Page page = wc.getPage(request);
 			WebResponse response = page.getWebResponse();
 			if(response == null) {
 				log.info("htmlunit获取html页面，响应为null。url="+requestParam.getUrl());
@@ -191,6 +206,7 @@ public class HtmlUnitClient {
     	//String url = "https://www.ustc.edu.cn/";
     	//String url = "https://www.yale.edu/";
     	//String url = "https://www.amazon.com/s/browse?_encoding=UTF8&node=4954955011&ref_=nav_shopall-export_nav_mw_sbd_intl_arts";
+    	//String url = "https://www.jd.cn/";
 		
 		HtmlUnitClient client = new HtmlUnitClient();
 		//client.initHttpUnit();
@@ -198,8 +214,8 @@ public class HtmlUnitClient {
 		/*String ip = "112.85.149.178";
 		int port = 9999;*/
 		
-		String ip = "220.186.173.230";
-		int port = 4207;
+		String ip = "124.42.68.152";
+		int port = 90;
 		
 		client.initHttpUnit(ip, port, BrowserType.Chrome);
 		

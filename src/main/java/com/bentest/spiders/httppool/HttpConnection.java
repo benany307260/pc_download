@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import com.bentest.spiders.entity.AmzUA;
+import com.bentest.spiders.http.H2HeaderConstant;
 import com.bentest.spiders.http.HeaderConstant;
 import com.bentest.spiders.http.HttpRequest;
 import com.bentest.spiders.http.HttpResponse;
@@ -192,7 +193,10 @@ public class HttpConnection {
 		httpRequest.setProxyPort(proxy.getPort());
 		httpRequest.setUrl(url);
 		
-		Map<String, String> headers = httpRequest.getHeadersForH2();
+		/*Map<String, String> headers = httpRequest.getHeadersForH2();
+		headers.put(H2HeaderConstant.NAME_COOKIE, cookie);
+		headers.put(H2HeaderConstant.NAME_USER_AGENT, userAgent);*/
+		Map<String, String> headers = httpRequest.getHeaders();
 		headers.put(HeaderConstant.NAME_COOKIE, cookie);
 		headers.put(HeaderConstant.NAME_USER_AGENT, userAgent);
 		
@@ -207,7 +211,7 @@ public class HttpConnection {
 			return true;
 		}
 		
-		List<String> cookieList = responseHeaders.get(HeaderConstant.NAME_SET_COOKIE);
+		List<String> cookieList = responseHeaders.get(H2HeaderConstant.NAME_SET_COOKIE);
 		if(CollectionUtils.isEmpty(cookieList)) {
 			return true;
 		}
