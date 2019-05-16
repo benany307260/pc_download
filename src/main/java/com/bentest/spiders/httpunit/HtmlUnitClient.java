@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.CharSet;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +115,10 @@ public class HtmlUnitClient {
 		log.info("htmlunit获取html页面。"+requestParam.toString());
 		
         try {
-			/*Page page = wc.getPage(url);
+        	//CookieManager CM = wc.getCookieManager(); //WC = Your WebClient's name  
+            //Set<Cookie> cookies_ret = CM.getCookies();
+			
+        	/*Page page = wc.getPage(url);
 			WebResponse resp = page.getWebResponse();
 			String content = resp.getContentAsString();
 			System.out.println(content);*/
@@ -151,6 +153,11 @@ public class HtmlUnitClient {
 			//String cookies = wc.getCookieManager().getCookies().toString();
 			//String pageXml = page.asXml(); //以xml的形式获取响应文本  
 			responseParam.setContent(response.getContentAsString());
+			
+			//CookieManager CM = wc.getCookieManager(); //WC = Your WebClient's name  
+            //Set<Cookie> cookies_ret = CM.getCookies();
+            //System.out.println(cookies_ret);
+			
 			return responseParam;
 		} catch (Exception e) {
 			log.error("htmlunit获取html页面，异常。", e);
@@ -201,11 +208,11 @@ public class HtmlUnitClient {
 	public static void main(String[] args) {
 		
 		//String url = "https://httpbin.org/get";
-    	String url = "https://nghttp2.org/httpbin/get";
+    	//String url = "https://nghttp2.org/httpbin/get";
     	//String url = "https://www.baidu.com/";
     	//String url = "https://www.ustc.edu.cn/";
     	//String url = "https://www.yale.edu/";
-    	//String url = "https://www.amazon.com/s/browse?_encoding=UTF8&node=4954955011&ref_=nav_shopall-export_nav_mw_sbd_intl_arts";
+    	String url = "https://www.amazon.com/s/browse?_encoding=UTF8&node=4954955011&ref_=nav_shopall-export_nav_mw_sbd_intl_arts";
     	//String url = "https://www.jd.cn/";
 		
 		HtmlUnitClient client = new HtmlUnitClient();
@@ -214,8 +221,8 @@ public class HtmlUnitClient {
 		/*String ip = "112.85.149.178";
 		int port = 9999;*/
 		
-		String ip = "124.42.68.152";
-		int port = 90;
+		String ip = "61.188.234.38";
+		int port = 4257;
 		
 		client.initHttpUnit(ip, port, BrowserType.Chrome);
 		
