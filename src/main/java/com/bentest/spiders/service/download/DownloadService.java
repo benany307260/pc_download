@@ -17,6 +17,8 @@ import com.bentest.spiders.constant.CmdType;
 import com.bentest.spiders.entity.AmzCmdtask;
 import com.bentest.spiders.entity.AmzDepartment;
 import com.bentest.spiders.entity.AmzProduct;
+import com.bentest.spiders.httppool.HttpConnection;
+import com.bentest.spiders.httppool.HttpPoolManager;
 import com.bentest.spiders.repository.AmzCmdtaskRespository;
 
 import cn.hutool.core.util.StrUtil;
@@ -49,7 +51,28 @@ public class DownloadService {
 				return -2;
 			}
 			
-			// TODO 执行下载
+			String url = parentDep.getUrl();
+			if(StrUtil.isBlank(url)) {
+				log.error("处理子类目下载，类目url为空。cmdText="+cmdText);
+				return -3;
+			}
+			
+			if(StrUtil.isBlank(parentDep.getUrlDomain())) {
+				log.error("处理子类目下载，类目url域名为空。cmdText="+cmdText);
+				url = AMZConstant.AMZ_US_DOMAIN + url;
+			}else {
+				url = parentDep.getUrlDomain() + url;
+			}
+			
+			// 最终请求url
+			url = "http://" + url;
+			
+			// TODO 执行下载，如何保证连续性
+			HttpConnection conn = HttpPoolManager.getInstance().getConnection();
+			String resp = conn.send(url);
+			if(StrUtil.isBlank(resp)) {
+				return "false";
+			}
 			
 			// TODO 下载成功，返回html文件路径
 			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Automotive\\Automotive-1-123456789.html";
