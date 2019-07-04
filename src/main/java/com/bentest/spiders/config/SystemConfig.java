@@ -28,6 +28,8 @@ public class SystemConfig {
 	private int areaNode;
 	
 	private String amzUrl;
+	
+	private String handleCmdTypes;
 
 	public String getAmzUrl() {
 		return amzUrl;
@@ -68,5 +70,13 @@ public class SystemConfig {
 	public void setScanProxyCron(String scanProxyCron) {
 		this.scanProxyCron = scanProxyCron;
 	}
-	
+
+	public String getHandleCmdTypes() {
+		return handleCmdTypes;
+	}
+
+	public void setHandleCmdTypes(String handleCmdTypes) {
+		this.handleCmdTypes = handleCmdTypes;
+	}
+
 }

@@ -71,7 +71,7 @@ public class DownloadService {
 			HttpConnection conn = HttpPoolManager.getInstance().getConnection();
 			String resp = conn.send(url);
 			if(StrUtil.isBlank(resp)) {
-				return "false";
+				return -4;
 			}
 			
 			// TODO 下载成功，返回html文件路径

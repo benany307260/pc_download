@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bentest.spiders.config.SystemConfig;
 import com.bentest.spiders.constant.CmdType;
 import com.bentest.spiders.dao.CmdMapper;
 import com.bentest.spiders.entity.AmzCmdtask;
@@ -24,12 +25,16 @@ public class DealCmdTask {
 	@Autowired
 	private DownloadService downloadService;
 	
+	@Autowired
+    private SystemConfig systemConfig;
+	
 	private static Integer cmdTaskId = 0;
 	
 	public void run() {
 		
+		String cmdTypes = systemConfig.getHandleCmdTypes();
 		//查询指令表 是否有新增操作
-		List<AmzCmdtask> cmdtaskList = cmdMapper.getCmdTask(cmdTaskId);
+		List<AmzCmdtask> cmdtaskList = cmdMapper.getCmdTask(cmdTaskId, cmdTypes);
 		if(cmdtaskList == null || cmdtaskList.size() < 1) {
 			log.debug("处理指令，没有新的指令信息，cmdTaskId:"+cmdTaskId);
 			return;

@@ -20,7 +20,7 @@ public interface CmdMapper {
 	/**
 	 * 查询指令表
 	 */
-	@Select("SELECT * FROM amz_cmdtask WHERE ID>#{id} AND CMD_STATUS=0 AND CMD_TYPE IN(102,104,106) ORDER BY ID ASC ")
+	@Select("SELECT * FROM amz_cmdtask WHERE ID>#{id} AND CMD_STATUS=0 AND CMD_TYPE IN(#{cmdTypes}) ORDER BY ID ASC ")
 	@Results({ 
 		@Result(property = "cmdStatus", column = "CMD_STATUS"),
 		@Result(property = "cmdText", column = "CMD_TEXT"),
@@ -28,7 +28,7 @@ public interface CmdMapper {
 		@Result(property = "createTime", column = "CREATE_TIME"),
 		@Result(property = "updateTime", column = "UPDATE_TIME")
 			})
-	public List<AmzCmdtask> getCmdTask(@Param("id") Integer id);
+	public List<AmzCmdtask> getCmdTask(@Param("id") Integer id, @Param("cmdTypes") String cmdTypes);
 	
 	/**
 	 * 查询指令表
