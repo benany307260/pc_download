@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.bentest.spiders.aliyunoss.OSSService;
+import com.bentest.spiders.config.SystemConfig;
 import com.bentest.spiders.constant.CmdType;
 import com.bentest.spiders.entity.AmzCmdtask;
 import com.bentest.spiders.entity.AmzDepartment;
@@ -29,6 +31,12 @@ public class TestController {
 	
 	@Autowired
 	AmzCmdtaskRespository cmdtaskRespository;
+	
+	@Autowired
+    private SystemConfig systemConfig;
+	
+	@Autowired
+	private OSSService ossService;
 	
 	@RequestMapping("/start")
 	public Boolean test() {
@@ -109,5 +117,15 @@ public class TestController {
 		finally {
 			HttpPoolManager.getInstance().returnConnection(conn);
 		}
+	}
+	
+	@RequestMapping("/ossup")
+	public Boolean ossup() {
+		return ossService.uploadString("text20190708.txt", "testddddddddd23423423zxcvbnm,");
+	}
+	
+	@RequestMapping("/ossdown")
+	public String ossdown() {
+		return ossService.downloadString("text20190708.txt");
 	}
 }

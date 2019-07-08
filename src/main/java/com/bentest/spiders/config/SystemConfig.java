@@ -31,6 +31,46 @@ public class SystemConfig {
 	
 	private String handleCmdTypes;
 
+	private String ossAccessKeyId;
+	
+	private String ossAccessKeySecret;
+	
+	private String ossBucketName;
+	
+	private String ossEndpoint;
+	
+	public String getOssEndpoint() {
+		return ossEndpoint;
+	}
+
+	public void setOssEndpoint(String ossEndpoint) {
+		this.ossEndpoint = ossEndpoint;
+	}
+
+	public String getOssBucketName() {
+		return ossBucketName;
+	}
+
+	public void setOssBucketName(String ossBucketName) {
+		this.ossBucketName = ossBucketName;
+	}
+
+	public String getOssAccessKeySecret() {
+		return ossAccessKeySecret;
+	}
+
+	public void setOssAccessKeySecret(String ossAccessKeySecret) {
+		this.ossAccessKeySecret = ossAccessKeySecret;
+	}
+
+	public String getOssAccessKeyId() {
+		return ossAccessKeyId;
+	}
+
+	public void setOssAccessKeyId(String ossAccessKeyId) {
+		this.ossAccessKeyId = ossAccessKeyId;
+	}
+
 	public String getAmzUrl() {
 		return amzUrl;
 	}
