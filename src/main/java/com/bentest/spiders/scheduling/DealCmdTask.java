@@ -32,7 +32,7 @@ public class DealCmdTask {
 	
 	public void run() {
 		
-		String cmdTypes = systemConfig.getHandleCmdTypes();
+		String cmdTypes = systemConfig.getHandleCmdTypes(); 
 		//查询指令表 是否有新增操作
 		List<AmzCmdtask> cmdtaskList = cmdMapper.getCmdTask(cmdTaskId, cmdTypes);
 		if(cmdtaskList == null || cmdtaskList.size() < 1) {
