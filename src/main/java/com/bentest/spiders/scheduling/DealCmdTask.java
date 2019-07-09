@@ -26,7 +26,7 @@ public class DealCmdTask {
 	private DownloadService downloadService;
 	
 	@Autowired
-    private SystemConfig systemConfig; 
+    private SystemConfig systemConfig;
 	
 	private static Integer cmdTaskId = 0;
 	
