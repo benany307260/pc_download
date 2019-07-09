@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.bentest.spiders.aliyunoss.OSSService;
+import com.bentest.spiders.config.SystemConfig;
 import com.bentest.spiders.constant.AMZConstant;
 import com.bentest.spiders.constant.CmdType;
 import com.bentest.spiders.entity.AmzCmdtask;
@@ -20,6 +22,7 @@ import com.bentest.spiders.entity.AmzProduct;
 import com.bentest.spiders.httppool.HttpConnection;
 import com.bentest.spiders.httppool.HttpPoolManager;
 import com.bentest.spiders.repository.AmzCmdtaskRespository;
+import com.bentest.spiders.util.GetIncrementId;
 
 import cn.hutool.core.util.StrUtil;
 
@@ -34,8 +37,11 @@ public class DownloadService {
 	@Autowired
 	AmzCmdtaskRespository cmdtaskRespository;
 	
-	/*@Autowired
-    private SystemConfig systemConfig;*/
+	@Autowired
+    private SystemConfig systemConfig;
+	
+	@Autowired
+	private OSSService ossService;
 	
 	public int dealSonDepDownload(String cmdText) {
 		
@@ -71,15 +77,22 @@ public class DownloadService {
 			HttpConnection conn = HttpPoolManager.getInstance().getConnection();
 			String resp = conn.send(url);
 			if(StrUtil.isBlank(resp)) {
+				log.error("处理子类目下载，返回内容为空。cmdText="+cmdText);
 				return -4;
 			}
 			
-			// TODO 下载成功，返回html文件路径
 			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Automotive\\Automotive-1-123456789.html";
-			String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Automotive\\Tools & Equipment-1-123456789.html";
+			//String htmlFilePath = "C:\\Users\\lenovo\\git\\pc_service\\page\\list-page\\Automotive\\Tools & Equipment-1-123456789.html";
+			long id = GetIncrementId.getInstance().getCount(systemConfig.getServerNode(), systemConfig.getAreaNode());
+			String fileName = parentDep.getDepId() + "/" + id;
+			boolean upResult = ossService.uploadString(fileName, resp);
+			// 失败
+			if(!upResult) {
+				log.error("处理子类目下载，上传oss失败。cmdText="+cmdText+",resp="+resp);
+				return -5;
+			}
 			
-			
-			//String htmlFilePath = "F:\\study\\amz\\git\\pc_service\\page\\list-page\\Arts & Crafts-123456789.html";
+			String htmlFilePath = fileName;
 			
 			parentDep.setHtmlFilePath(htmlFilePath);
 			
