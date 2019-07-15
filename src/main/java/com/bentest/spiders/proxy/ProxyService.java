@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.http.client.utils.URIBuilder;
@@ -48,7 +49,7 @@ public class ProxyService {
 			return proxy;
 		}
 		
-		List<ProxyInfo> proxyList = getProxyForZhiMa(1);
+		List<ProxyInfo> proxyList = getProxyForXila(1);
 		if(CollectionUtils.isEmpty(proxyList)) {
 			return null;
 		}
@@ -202,6 +203,89 @@ public class ProxyService {
 			return proxyList;
 		} catch (Exception e) {
 			log.error("获取芝麻代理的http代理，异常。count="+count, e);
+			return null;
+		}
+	}
+	
+	private List<ProxyInfo> getProxyForXila(int count) {
+		if(count < 1) {
+			return null;
+		}
+		List<AmzProxyIsp> amzProxyList = amzProxyIspRespository.findByProxyType(2);
+		if(CollectionUtils.isEmpty(amzProxyList)) {
+			return null;
+		}
+		
+		AmzProxyIsp amzProxy = amzProxyList.get(0);
+		if(amzProxy == null) {
+			return null;
+		}
+		
+		String getUrl = amzProxy.getGetUrl();
+		if(StrUtil.isBlank(getUrl)) {
+			return null;
+		}
+		
+		try {
+			URIBuilder uri = new URIBuilder(getUrl);
+			uri.setParameter("num", String.valueOf(count));
+			String url = uri.build().toString();
+			
+			HttpUtils httpUtils = new HttpUtils();
+			String response = httpUtils.sendGet(url);
+			if(StrUtil.isBlank(response)) {
+				log.error("获取西拉代理的http代理，响应为空。url="+url);
+				return null;
+			}
+			
+			long getTime = System.currentTimeMillis();
+			
+			log.info("获取西拉代理的http代理，url="+url+",response="+response);
+			
+			String[] ipportList = response.split(" ");
+			if(ipportList == null || ipportList.length < 1) {
+				log.error("获取西拉代理的http代理，响应为空。url="+url);
+				return null;
+			}
+			
+			List<ProxyInfo> proxyList = new ArrayList<>();
+			
+			
+			int size = ipportList.length;
+	        for (int i = 0; i < size; i++){
+	        	String ipport = ipportList[i];
+	            if(StringUtils.isBlank(ipport)) {
+	            	continue;
+	            }
+	            
+	            String[] ipportArray = ipport.split(":");
+	            if(ipportArray == null || ipportArray.length < 2) {
+	            	continue;
+	            }
+	            String ip = ipportArray[0];
+	            Integer port = Integer.valueOf(ipportArray[1]);
+	            
+	            Date curTime = new Date();
+	            long curTimeMill = System.currentTimeMillis() + 60*60*1000;
+	            curTime.setTime(curTimeMill);
+	            String expireTime = DateFormatUtils.format(curTime, "yyyy-MM-dd HH:mm:ss");
+	            
+	            ProxyInfo proxy = new ProxyInfo();
+	            proxy.setIp(ip);
+	            proxy.setPort(port);
+	            proxy.setExpireTimeStr(expireTime);
+	            proxy.setGetTime(getTime);
+	            
+	            Date date = DateUtils.parseDate(expireTime, Locale.TRADITIONAL_CHINESE, "yyyy-MM-dd HH:mm:ss");
+	            proxy.setExpireTime(date.getTime());
+	            
+	            log.info("获取西拉代理的http代理，"+proxy.toString());
+	            
+	            proxyList.add(proxy);
+	        }
+			return proxyList;
+		} catch (Exception e) {
+			log.error("获取西拉代理的http代理，异常。count="+count, e);
 			return null;
 		}
 	}

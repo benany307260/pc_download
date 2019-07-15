@@ -221,8 +221,8 @@ public class HtmlUnitClient {
 		/*String ip = "112.85.149.178";
 		int port = 9999;*/
 		
-		String ip = "61.188.234.38";
-		int port = 4257;
+		String ip = "183.63.101.62";
+		int port = 55555;
 		
 		client.initHttpUnit(ip, port, BrowserType.Chrome);
 		
