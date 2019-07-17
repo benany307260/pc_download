@@ -1,6 +1,5 @@
 package com.bentest.spiders.scheduling;
 
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bentest.spiders.config.SystemConfig;
-import com.bentest.spiders.constant.CmdType;
 import com.bentest.spiders.dao.CmdMapper;
 import com.bentest.spiders.entity.AmzCmdtask;
-import com.bentest.spiders.service.download.DownloadService;
+import com.bentest.spiders.service.download.CmdService;
 
 @Service
 public class DealCmdTask {
@@ -22,8 +20,11 @@ public class DealCmdTask {
 	@Autowired
 	private CmdMapper cmdMapper;
 	
+	/*@Autowired
+	private DownloadService downloadService;*/
+	
 	@Autowired
-	private DownloadService downloadService;
+	private CmdService cmdService;
 	
 	@Autowired
     private SystemConfig systemConfig;
@@ -46,13 +47,15 @@ public class DealCmdTask {
 			}
 			cmdTaskId = cmdTask.getId();
 			
-			// 设置为处理中
+			/*// 设置为处理中
 			cmdTask.setCmdStatus(1);
 			cmdTask.setUpdateTime(new Date());
 			// 未处理的指令更新为处理中
-			cmdMapper.updateCmdStatus(cmdTask.getId(), cmdTask.getCmdStatus(), 0);
+			cmdMapper.updateCmdStatus(cmdTask.getId(), cmdTask.getCmdStatus(), 0);*/
 			
-			int res = deal(cmdTask);
+			cmdService.dealCmdTask(cmdTask);
+			
+			/*int res = deal(cmdTask);
 			if(res > 0) {
 				cmdTask.setCmdStatus(2);
 			}else {
@@ -61,11 +64,11 @@ public class DealCmdTask {
 			cmdTask.setUpdateTime(new Date());
 			
 			// 更新指令处理结果
-			cmdMapper.updateCmdStatus(cmdTask.getId(), cmdTask.getCmdStatus(), 1);
+			cmdMapper.updateCmdStatus(cmdTask.getId(), cmdTask.getCmdStatus(), 1);*/
 		}
 	}
 	
-	private int deal(AmzCmdtask cmdTask){
+	/*private int deal(AmzCmdtask cmdTask){
 		try {
 			if(cmdTask == null){
 				log.info("指令处理，指令对象为null。");
@@ -98,7 +101,7 @@ public class DealCmdTask {
 			log.error("处理指令，异常。", e);
 			return -9999;
 		}
-	}
+	}*/
 	
 	
 }
