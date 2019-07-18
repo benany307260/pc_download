@@ -24,7 +24,7 @@ public class CmdService {
 	private CmdMapper cmdMapper;
 	
 	@Async("downloadTaskExecutor")
-	public boolean dealCmdTask(AmzCmdtask cmdTask){
+	public void dealCmdTask(AmzCmdtask cmdTask){
 		try {
 			// 设置为处理中
 			cmdTask.setCmdStatus(1);
@@ -33,7 +33,7 @@ public class CmdService {
 			Integer updateRes = cmdMapper.updateCmdStatus(cmdTask.getId(), cmdTask.getCmdStatus(), 0);
 			if(updateRes == null || updateRes < 1) {
 				log.error("处理指令任务，指令更新为处理中，更新失败。updateRes="+updateRes+",cmdId="+cmdTask.getId());
-				return false;
+				//return false;
 			}
 						
 			int res = deal(cmdTask);
@@ -52,10 +52,10 @@ public class CmdService {
 				log.error("处理指令任务，指令任务更新处理结果，更新失败。updateRes="+updateRes+",cmdId="+cmdTask.getId()+",res="+res);
 			}
 			
-			return true;
+			//return true;
 		} catch (Exception e) {
 			log.error("处理指令任务，异常。", e);
-			return false;
+			//return false;
 		}
 	}
 	
