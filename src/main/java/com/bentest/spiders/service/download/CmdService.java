@@ -33,7 +33,7 @@ public class CmdService {
 			Integer updateRes = cmdMapper.updateCmdStatus(cmdTask.getId(), cmdTask.getCmdStatus(), 0);
 			if(updateRes == null || updateRes < 1) {
 				log.error("处理指令任务，指令更新为处理中，更新失败。updateRes="+updateRes+",cmdId="+cmdTask.getId());
-				//return false;
+				return;
 			}
 						
 			int res = deal(cmdTask);
