@@ -28,6 +28,11 @@ public class HttpPoolEvictionPolicy<T> implements EvictionPolicy<HttpConnection>
         	return true;
         }
         
+        if(conn.getFailCount() > 5) {
+        	log.info("连接池回收，连接对象失败超5次，回收掉。");
+        	return true;
+        }
+        
         ProxyInfo proxy = conn.getProxy();
         if(proxy == null) {
         	log.info("连接池回收，代理对象为null，回收掉。");

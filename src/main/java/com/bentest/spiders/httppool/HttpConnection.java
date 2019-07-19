@@ -44,6 +44,8 @@ public class HttpConnection {
 
 	private HtmlUnitClient httpUtils = null;
 	
+	private int failCount = 0;
+	
 	public HttpConnection() {
 	}
 	
@@ -100,11 +102,16 @@ public class HttpConnection {
 		HttpResponse response = get(url);
 		
 		if(response == null) {
+			failCount ++ ;
 			return null;
 		}
 		if(response.getCode() != HttpURLConnection.HTTP_OK && response.getCode() != HttpURLConnection.HTTP_MOVED_TEMP) {
+			failCount ++ ;
 			log.error("http连接对象，发送get的https请求，响应状态码不为200/302，code="+response.getCode()+",url="+url);
 			return null;
+		}
+		if(StrUtil.isBlank(response.getContent())) {
+			failCount ++ ;
 		}
 		
 		setCookie(response);
@@ -288,6 +295,14 @@ public class HttpConnection {
 		return str;
 	}
 	
+	public int getFailCount() {
+		return failCount;
+	}
+
+	public void setFailCount(int failCount) {
+		this.failCount = failCount;
+	}
+
 	public ProxyInfo getProxy() {
 		return proxy;
 	}

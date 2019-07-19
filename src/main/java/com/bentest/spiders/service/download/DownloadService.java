@@ -76,6 +76,7 @@ public class DownloadService {
 			// TODO 执行下载，如何保证连续性
 			HttpConnection conn = HttpPoolManager.getInstance().getConnection();
 			String resp = conn.send(url);
+			HttpPoolManager.getInstance().returnConnection(conn);
 			if(StrUtil.isBlank(resp)) {
 				log.error("处理子类目下载，返回内容为空。cmdText="+cmdText);
 				return -4;
