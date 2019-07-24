@@ -13,6 +13,11 @@ public class SystemConfig {
 	private String scanCmdCron = "0/5 * * * * ?";
 	
 	/**
+	 * 扫描重试指令Cron表达式，默认每5s一次
+	 */
+	private String scanRetryCmdCron = "0/5 * * * * ?";
+	
+	/**
 	 * 扫描代理Cron表达式，默认每5s一次
 	 */
 	private String scanProxyCron = "0/5 * * * * ?";
@@ -44,7 +49,25 @@ public class SystemConfig {
 	private int queueCapacity;
 	private int keepAliveSeconds;
 	
+	private int cmdRetryCount;
 	
+	
+	public int getCmdRetryCount() {
+		return cmdRetryCount;
+	}
+
+	public void setCmdRetryCount(int cmdRetryCount) {
+		this.cmdRetryCount = cmdRetryCount;
+	}
+
+	public String getScanRetryCmdCron() {
+		return scanRetryCmdCron;
+	}
+
+	public void setScanRetryCmdCron(String scanRetryCmdCron) {
+		this.scanRetryCmdCron = scanRetryCmdCron;
+	}
+
 	public int getCorePoolSize() {
 		return corePoolSize;
 	}

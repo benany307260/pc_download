@@ -31,6 +31,7 @@ public class CmdService {
 			cmdTask.setUpdateTime(new Date());
 			// 未处理的指令更新为处理中
 			Integer updateRes = cmdMapper.updateCmdStatus(cmdTask.getId(), cmdTask.getCmdStatus(), 0);
+			log.info("处理指令任务，指令更新为处理中。updateRes="+updateRes+",cmdId="+cmdTask.getId());
 			if(updateRes == null || updateRes < 1) {
 				log.error("处理指令任务，指令更新为处理中，更新失败。updateRes="+updateRes+",cmdId="+cmdTask.getId());
 				return;
@@ -46,8 +47,11 @@ public class CmdService {
 			}
 			cmdTask.setUpdateTime(new Date());
 			
+			log.info("处理指令任务，处理结果。cmdId="+cmdTask.getId()+",res="+res);
+			
 			// 更新指令处理结果
 			updateRes = cmdMapper.updateCmdStatus(cmdTask.getId(), cmdTask.getCmdStatus(), 1);
+			log.info("处理指令任务，指令任务更新处理结果。updateRes="+updateRes+",cmdId="+cmdTask.getId()+",res="+res);
 			if(updateRes == null || updateRes < 1) {
 				log.error("处理指令任务，指令任务更新处理结果，更新失败。updateRes="+updateRes+",cmdId="+cmdTask.getId()+",res="+res);
 			}
@@ -56,6 +60,48 @@ public class CmdService {
 		} catch (Exception e) {
 			log.error("处理指令任务，异常。", e);
 			//return false;
+		}
+	}
+	
+	@Async("downloadTaskExecutor")
+	public void dealRetryCmdTask(AmzCmdtask cmdTask){
+		try {
+			int dealCount = cmdTask.getDealCount();
+			// 重试次数+1
+			dealCount++;
+			cmdTask.setDealCount(dealCount);
+			// 设置为处理中
+			cmdTask.setCmdStatus(1);
+			cmdTask.setUpdateTime(new Date());
+			// 失败的指令更新为处理中
+			Integer updateRes = cmdMapper.updateCmdStatus(cmdTask.getId(), cmdTask.getCmdStatus(), 3, dealCount);
+			log.info("处理重试指令任务，指令更新为处理中。updateRes="+updateRes+",cmdId="+cmdTask.getId()+",dealCount="+dealCount);
+			if(updateRes == null || updateRes < 1) {
+				log.error("处理重试指令任务，指令更新为处理中，更新失败。updateRes="+updateRes+",cmdId="+cmdTask.getId()+",dealCount="+dealCount);
+				return;
+			}
+						
+			int res = deal(cmdTask);
+			if(res > 0) {
+				// 处理成功
+				cmdTask.setCmdStatus(2);
+			}else {
+				// 处理失败
+				cmdTask.setCmdStatus(3);
+			}
+			cmdTask.setUpdateTime(new Date());
+			
+			log.info("处理重试指令任务，处理结果。cmdId="+cmdTask.getId()+",res="+res);
+			
+			// 更新指令处理结果
+			updateRes = cmdMapper.updateCmdStatus(cmdTask.getId(), cmdTask.getCmdStatus(), 1);
+			log.info("处理重试指令任务，指令任务更新处理结果。updateRes="+updateRes+",cmdId="+cmdTask.getId()+",res="+res);
+			if(updateRes == null || updateRes < 1) {
+				log.error("处理重试指令任务，指令任务更新处理结果，更新失败。updateRes="+updateRes+",cmdId="+cmdTask.getId()+",res="+res);
+			}
+			
+		} catch (Exception e) {
+			log.error("处理重试指令任务，异常。", e);
 		}
 	}
 	
