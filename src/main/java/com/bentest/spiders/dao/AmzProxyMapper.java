@@ -1,6 +1,7 @@
 package com.bentest.spiders.dao;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -20,5 +21,11 @@ public interface AmzProxyMapper {
 	 */
 	@Update("UPDATE amz_proxy SET STATUS=1, UPDATE_TIME=NOW() WHERE STATUS=0 AND EXPIRE_TIME < NOW() ")
 	public Integer updateProxyNoUse();
+	
+	/**
+	 * 更新过期代理为不可用
+	 */
+	@Update("UPDATE amz_proxy SET STATUS=1, UPDATE_TIME=NOW() WHERE STATUS=0 AND ID IN(#{ids}) ")
+	public Integer updateProxyNoUse(@Param("ids") String ids);
 	
 }

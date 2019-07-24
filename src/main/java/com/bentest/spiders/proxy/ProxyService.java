@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bentest.spiders.config.SystemConfig;
 import com.bentest.spiders.entity.AmzProxy;
 import com.bentest.spiders.entity.AmzProxyIsp;
 import com.bentest.spiders.http.HttpUtils;
@@ -38,6 +39,9 @@ public class ProxyService {
 	@Autowired
 	private AmzProxyRespository amzProxyRespository;
 	
+	@Autowired
+    private SystemConfig systemConfig;
+	
 	public List<ProxyInfo> getProxy(int count){
 		return getProxyForZhiMa(count);
 	}
@@ -49,7 +53,7 @@ public class ProxyService {
 			return proxy;
 		}
 		
-		List<ProxyInfo> proxyList = getProxyForXila(1);
+		List<ProxyInfo> proxyList = getProxyForXila(systemConfig.getProxyCount());
 		if(CollectionUtils.isEmpty(proxyList)) {
 			return null;
 		}
@@ -114,6 +118,7 @@ public class ProxyService {
 	
 	private ProxyInfo amzProxy2ProxyInfo(AmzProxy amzProxy) {
 		ProxyInfo proxy = new ProxyInfo();
+		proxy.setId(amzProxy.getId());
 		proxy.setIp(amzProxy.getIp());
 		proxy.setPort(amzProxy.getPort());
 		if(amzProxy.getExpireTime() != null) {

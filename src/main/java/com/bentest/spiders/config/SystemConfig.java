@@ -51,7 +51,17 @@ public class SystemConfig {
 	
 	private int cmdRetryCount;
 	
+	private int proxyCount;
 	
+	
+	public int getProxyCount() {
+		return proxyCount;
+	}
+
+	public void setProxyCount(int proxyCount) {
+		this.proxyCount = proxyCount;
+	}
+
 	public int getCmdRetryCount() {
 		return cmdRetryCount;
 	}

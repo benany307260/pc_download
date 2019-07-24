@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bentest.spiders.proxy.ProxyInfo;
+import com.bentest.spiders.queue.ProxyQueue;
 
 
 public class HttpPoolEvictionPolicy<T> implements EvictionPolicy<HttpConnection> {
@@ -40,6 +41,7 @@ public class HttpPoolEvictionPolicy<T> implements EvictionPolicy<HttpConnection>
         }
         if(proxy.getExpireTime() < System.currentTimeMillis()) {
         	log.info("连接池回收，代理过期，回收掉。"+proxy.toString());
+        	ProxyQueue.addInvalidProxy(proxy);
         	return true;
         }
         return false;

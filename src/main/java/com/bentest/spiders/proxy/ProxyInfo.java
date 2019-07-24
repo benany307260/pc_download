@@ -2,6 +2,8 @@ package com.bentest.spiders.proxy;
 
 public class ProxyInfo {
 	
+	private Long id;
+	
 	private String ip;
 	
 	private int port;
@@ -14,14 +16,25 @@ public class ProxyInfo {
 	
 	private String expireTimeStr;
 	
+	
+	
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("ip=").append(ip).append(",")
+		sb.append("id=").append(id).append(",")
+		.append("ip=").append(ip).append(",")
 		.append("port=").append(port).append(",")
 		.append("getTime=").append(getTime).append(",")
 		.append("expireTime=").append(expireTime).append(",")
 		.append("expireTimeStr=").append(expireTimeStr).append(",");
 		return sb.toString();
+	}
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getIp() {
