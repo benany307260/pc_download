@@ -62,6 +62,29 @@ public class HttpConnection {
 		
 	}
 	
+	public String sendRetry(String url) {
+		if(StrUtil.isBlank(url)) {
+			log.error("http连接对象，发送get的https请求，请求url为空。");
+			return null;
+		}
+		
+		String resp = send(url);
+		if(StrUtil.isNotBlank(resp)) {
+			return resp;
+		}
+		
+		int retryCount = 3;
+		int i = 0;
+		while(i < retryCount) {
+			resp = send(url);
+			if(StrUtil.isNotBlank(resp)) {
+				return resp;
+			}
+		}
+		
+		return resp;
+	}
+	
 	public String send(String url) {
 		if(StrUtil.isBlank(url)) {
 			log.error("http连接对象，发送get的https请求，请求url为空。");
